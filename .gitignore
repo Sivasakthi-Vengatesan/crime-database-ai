@@ -1,0 +1,36 @@
+# Environment and secrets
+.env
+.env.local
+*.env
+
+# Java / Maven build output
+backend/target/
+backend/tools/
+backend/maven.zip
+backend/download_maven.ps1
+target/
+*.class
+*.jar
+*.war
+.m2/
+
+# Node / React Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+node_modules/
+dist/
+.npm
+
+# Temp test files
+test_api.js
+test_followup.js
+test_req.json
+
+# IDE / OS metadata
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+*.log

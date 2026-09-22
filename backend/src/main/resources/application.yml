@@ -1,0 +1,48 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: crime-database-ai-backend
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:h2:mem:crimedb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
+    driver-class-name: ${DATABASE_DRIVER:org.h2.Driver}
+
+  jpa:
+    database-platform: ${JPA_DIALECT:org.hibernate.dialect.H2Dialect}
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      continue-on-error: true
+
+langchain4j:
+  llm:
+    api-key: ${LLM_API_KEY:}
+    model-name: ${LLM_MODEL_NAME:gpt-4o-mini}
+    temperature: 0.1
+    max-tokens: 800
+  embedding:
+    dimension: 384
+
+app:
+  rag:
+    top-k: 8
+    similarity-threshold: 0.30
+    system-prompt: |
+      You are an intelligent crime database assistant.
+      Answer questions using only the crime records provided as context.
+      Do not invent case IDs, dates, locations, people, statistics, or events.
+      If the available records do not contain enough information, clearly state that the information is unavailable.
+      Always provide the relevant retrieved records as evidence.

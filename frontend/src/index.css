@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --canvas-cream: #FAF6F0;
+  --text-ink: #1A1A1A;
+  --text-muted: #736B5E;
+  --text-subtle: #9E9484;
+  --accent-terracotta: #C4552F;
+  --accent-terracotta-hover: #A8421F;
+  --paper-surface: #F4ECE1;
+  --paper-hover: #ECE2D5;
+  --soft-terracotta: #F0E3D5;
+  --soft-terracotta-border: #EAD6C4;
+  --divider-hairline: #E7DCCC;
+  --code-charcoal: #262019;
+  --code-header: #1F1A15;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--canvas-cream);
+  color: var(--text-ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.68;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Classes */
+.font-serif {
+  font-family: 'Fraunces', Georgia, serif;
+  font-optical-sizing: auto;
+}
+
+.font-sans {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Custom Editorial Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D9CDBC;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C4552F;
+}
+
+/* Three-dot terracotta typing indicator */
+@keyframes terracotta-bounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+.dot-bounce-1 {
+  animation: terracotta-bounce 1.4s infinite ease-in-out both;
+  animation-delay: -0.32s;
+}
+
+.dot-bounce-2 {
+  animation: terracotta-bounce 1.4s infinite ease-in-out both;
+  animation-delay: -0.16s;
+}
+
+.dot-bounce-3 {
+  animation: terracotta-bounce 1.4s infinite ease-in-out both;
+}
+
+/* Glassmorphism background for sticky top bar and bottom composer */
+.glass-panel {
+  background-color: rgba(250, 246, 240, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Hover transitions */
+.transition-smooth {
+  transition: all 220ms ease-in-out;
+}
