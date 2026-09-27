@@ -5,12 +5,11 @@ import {
   AlertTriangle,
   FolderOpen,
   PieChart,
-  BarChart3,
   MapPin,
   Flame,
-  ArrowRight,
   RefreshCw,
   MessageSquare,
+  TrendingUp,
 } from 'lucide-react';
 import { AnalyticsData, CrimeRecordItem } from '../types/chat';
 import { fetchAnalyticsApi } from '../api/chatApi';
@@ -41,8 +40,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center p-12 text-slate-400">
-        <RefreshCw size={28} className="animate-spin text-cyan-400 mb-3" />
+      <div className="w-full h-full flex flex-col items-center justify-center p-12 text-slate-500">
+        <RefreshCw size={28} className="animate-spin text-red-500 mb-3" />
         <p className="text-sm font-mono">Aggregating real-time crime intelligence metrics...</p>
       </div>
     );
@@ -50,9 +49,9 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
 
   if (!analytics) {
     return (
-      <div className="w-full max-w-4xl mx-auto px-4 py-8 text-center text-slate-400">
+      <div className="w-full max-w-4xl mx-auto px-4 py-8 text-center text-slate-500">
         <p>Could not load intelligence analytics. Please ensure backend server is operational.</p>
-        <button onClick={loadData} className="mt-4 px-4 py-2 rounded-xl btn-primary text-sm font-semibold">
+        <button onClick={loadData} className="mt-4 px-4 py-2 rounded-xl bg-red-500 text-white text-sm font-bold shadow-md">
           Retry
         </button>
       </div>
@@ -66,75 +65,75 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
   const maxTypeCount = sortedTypes.length > 0 ? Math.max(...sortedTypes.map((t) => t[1])) : 1;
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-8 overflow-y-auto space-y-8">
+    <div className="w-full max-w-6xl mx-auto px-4 py-8 overflow-y-auto pb-24 space-y-8 animate-fadeIn">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-2">
-            <Activity size={13} className="animate-pulse" />
-            Active Threat Telemetry
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold uppercase tracking-wider mb-2 font-mono">
+            <Activity size={13} className="text-red-500 animate-pulse" />
+            Suspect & Threat Telemetry Radar
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold font-display text-white tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
             Crime Threat Radar & Intelligence Analytics
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Aggregated statistical insights across all registered cases, city threat distributions, and resolution ratios.
+          <p className="text-sm text-gray-500 mt-1">
+            Real-time statistical synthesis across all registered criminal cases, city density indexes, and resolution ratios.
           </p>
         </div>
 
         <button
           onClick={loadData}
-          className="px-3.5 py-2 rounded-xl btn-secondary text-xs font-medium flex items-center gap-2 self-start sm:self-auto"
+          className="px-3.5 py-2 rounded-xl bg-white hover:bg-gray-100 border border-gray-200 text-slate-700 text-xs font-semibold flex items-center gap-2 self-start sm:self-auto shadow-sm"
         >
           <RefreshCw size={14} />
-          Refresh Radar
+          Refresh Metrics
         </button>
       </div>
 
       {/* Top 4 Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Indexed */}
-        <div className="cyber-panel p-5 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono uppercase">
-            <span>Total Indexed Records</span>
-            <FolderOpen size={16} className="text-cyan-400" />
+        <div className="p-5 rounded-[24px] bg-white border border-gray-200/90 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-gray-500 text-xs font-mono uppercase">
+            <span>Total Indexed Cases</span>
+            <FolderOpen size={16} className="text-red-500" />
           </div>
-          <div className="text-3xl font-bold font-mono text-white">{analytics.totalRecords}</div>
-          <p className="text-[11px] text-cyan-400">Indexed in pgvector & JPA</p>
+          <div className="text-3xl font-bold font-mono text-slate-800">{analytics.totalRecords}</div>
+          <p className="text-[11px] text-red-600 font-semibold font-mono">pgvector & PostgreSQL Active</p>
         </div>
 
         {/* Solved Ratio */}
-        <div className="cyber-panel p-5 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono uppercase">
+        <div className="p-5 rounded-[24px] bg-white border border-gray-200/90 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-gray-500 text-xs font-mono uppercase">
             <span>Resolution Rate</span>
-            <ShieldCheck size={16} className="text-emerald-400" />
+            <ShieldCheck size={16} className="text-emerald-500" />
           </div>
-          <div className="text-3xl font-bold font-mono text-emerald-400">{analytics.solvedRate}%</div>
-          <p className="text-[11px] text-slate-400">{analytics.closedCases} closed / resolved cases</p>
+          <div className="text-3xl font-bold font-mono text-emerald-600">{analytics.solvedRate}%</div>
+          <p className="text-[11px] text-gray-500">{analytics.closedCases} closed / resolved cases</p>
         </div>
 
         {/* Active Investigations */}
-        <div className="cyber-panel p-5 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono uppercase">
+        <div className="p-5 rounded-[24px] bg-white border border-gray-200/90 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-gray-500 text-xs font-mono uppercase">
             <span>Active Investigations</span>
-            <Activity size={16} className="text-amber-400" />
+            <Activity size={16} className="text-orange-500" />
           </div>
-          <div className="text-3xl font-bold font-mono text-amber-400">
+          <div className="text-3xl font-bold font-mono text-orange-600">
             {analytics.underInvestigationCases + analytics.openCases}
           </div>
-          <p className="text-[11px] text-slate-400">{analytics.openCases} Open, {analytics.underInvestigationCases} Under Active Probe</p>
+          <p className="text-[11px] text-gray-500">{analytics.openCases} Open, {analytics.underInvestigationCases} Active Probes</p>
         </div>
 
-        {/* High / Critical Severity */}
-        <div className="cyber-panel p-5 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono uppercase">
+        {/* High Severity */}
+        <div className="p-5 rounded-[24px] bg-white border border-gray-200/90 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-gray-500 text-xs font-mono uppercase">
             <span>High Threat Cases</span>
-            <AlertTriangle size={16} className="text-rose-400" />
+            <AlertTriangle size={16} className="text-red-500" />
           </div>
-          <div className="text-3xl font-bold font-mono text-rose-400">
+          <div className="text-3xl font-bold font-mono text-red-600">
             {(analytics.severityCounts?.Critical || 0) + (analytics.severityCounts?.High || 0)}
           </div>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-gray-500">
             {analytics.severityCounts?.Critical || 0} Critical, {analytics.severityCounts?.High || 0} High
           </p>
         </div>
@@ -143,13 +142,13 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
       {/* 2-Column Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* City Breakdown */}
-        <div className="cyber-panel p-6 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div className="flex items-center gap-2 text-sm font-bold text-white font-display">
-              <MapPin size={16} className="text-cyan-400" />
+        <div className="p-6 rounded-[28px] bg-white border border-gray-200 shadow-sm space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
+              <MapPin size={16} className="text-red-500" />
               Geographic Case Density by City
             </div>
-            <span className="text-xs font-mono text-slate-400">{sortedCities.length} Regions</span>
+            <span className="text-xs font-mono text-gray-400">{sortedCities.length} Regions</span>
           </div>
 
           <div className="space-y-3">
@@ -157,13 +156,13 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
               const percent = Math.round((count / maxCityCount) * 100);
               return (
                 <div key={city} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-200">{city}</span>
-                    <span className="font-mono text-slate-400">{count} cases</span>
+                  <div className="flex items-center justify-between text-xs font-medium">
+                    <span className="text-slate-800">{city}</span>
+                    <span className="font-mono text-gray-500">{count} cases</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-gray-100 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500"
+                      className="h-full rounded-full bg-gradient-to-r from-red-500 to-orange-400 transition-all duration-500"
                       style={{ width: `${percent}%` }}
                     ></div>
                   </div>
@@ -173,14 +172,14 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
           </div>
         </div>
 
-        {/* Crime Category Breakdown */}
-        <div className="cyber-panel p-6 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div className="flex items-center gap-2 text-sm font-bold text-white font-display">
-              <PieChart size={16} className="text-indigo-400" />
-              Incident Classification Distribution
+        {/* Crime Classification Breakdown */}
+        <div className="p-6 rounded-[28px] bg-white border border-gray-200 shadow-sm space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
+              <PieChart size={16} className="text-orange-500" />
+              Incident Classification Breakdown
             </div>
-            <span className="text-xs font-mono text-slate-400">{sortedTypes.length} Categories</span>
+            <span className="text-xs font-mono text-gray-400">{sortedTypes.length} Types</span>
           </div>
 
           <div className="space-y-3">
@@ -188,13 +187,13 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
               const percent = Math.round((count / maxTypeCount) * 100);
               return (
                 <div key={type} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-200">{type}</span>
-                    <span className="font-mono text-slate-400">{count} incidents</span>
+                  <div className="flex items-center justify-between text-xs font-medium">
+                    <span className="text-slate-800">{type}</span>
+                    <span className="font-mono text-gray-500">{count} incidents</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-gray-100 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-500"
+                      className="h-full rounded-full bg-gradient-to-r from-orange-400 to-amber-500 transition-all duration-500"
                       style={{ width: `${percent}%` }}
                     ></div>
                   </div>
@@ -206,41 +205,45 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
       </div>
 
       {/* Recent High-Risk Hotspots */}
-      <div className="cyber-panel p-6 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-white/10">
-          <div className="flex items-center gap-2 text-sm font-bold text-white font-display">
-            <Flame size={16} className="text-rose-400 animate-pulse" />
-            Active High-Risk Incident Hotspots
+      <div className="p-6 rounded-[28px] bg-white border border-gray-200 shadow-sm space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
+            <Flame size={16} className="text-red-500 animate-pulse" />
+            Active High-Threat Incident Hotspots
           </div>
-          <span className="text-xs font-mono text-rose-400 font-semibold uppercase">PRIORITY WATCHLIST</span>
+          <span className="text-xs font-mono text-red-600 font-bold uppercase bg-red-50 px-2 py-0.5 rounded-full border border-red-200">
+            PRIORITY WATCHLIST
+          </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {(analytics.recentHotspots || []).map((hotspot: CrimeRecordItem) => (
             <div
               key={hotspot.caseId}
-              className="p-4 rounded-xl bg-slate-900/60 border border-white/5 hover:border-rose-500/30 transition-all space-y-2 flex flex-col justify-between"
+              className="p-4 rounded-2xl bg-gray-50/80 border border-gray-200 hover:border-red-300 transition-all space-y-2 flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <span className="font-mono text-xs font-bold text-cyan-400">{hotspot.caseId}</span>
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span className="font-mono text-xs font-bold text-slate-800 bg-white px-2 py-0.5 rounded-lg border border-gray-200">
+                    {hotspot.caseId}
+                  </span>
                   <span
-                    className="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase"
-                    style={{
-                      backgroundColor: hotspot.severity === 'Critical' ? 'rgba(244,63,94,0.2)' : 'rgba(245,158,11,0.2)',
-                      color: hotspot.severity === 'Critical' ? '#f43f5e' : '#f59e0b',
-                    }}
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase ${
+                      hotspot.severity === 'Critical'
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-orange-100 text-orange-700'
+                    }`}
                   >
                     {hotspot.severity}
                   </span>
                 </div>
-                <div className="text-xs text-slate-200 font-medium">
-                  {hotspot.crimeType} in <span className="text-white font-semibold">{hotspot.location}</span>
+                <div className="text-xs text-slate-800 font-semibold">
+                  {hotspot.crimeType} in <span className="text-red-600 font-bold">{hotspot.location}</span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1 line-clamp-2">{hotspot.description}</p>
+                <p className="text-xs text-slate-600 mt-1 line-clamp-2">{hotspot.description}</p>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-white/5 text-xs text-slate-500">
+              <div className="flex items-center justify-between pt-2 border-t border-gray-200/80 text-xs text-gray-500">
                 <span>{hotspot.incidentDate}</span>
                 <button
                   onClick={() =>
@@ -249,7 +252,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ onInvest
                       `Analyze high priority hotspot case ${hotspot.caseId} in ${hotspot.location}: ${hotspot.description}`
                     )
                   }
-                  className="text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1 text-xs"
+                  className="text-red-600 hover:text-red-700 font-bold flex items-center gap-1 text-xs"
                 >
                   <MessageSquare size={13} />
                   Analyze in AI Chat

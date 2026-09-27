@@ -11,22 +11,22 @@ export const TerminalBlock: React.FC<TerminalBlockProps> = ({ log }) => {
   const lines = log.split('\n');
 
   return (
-    <div className="my-3 rounded-xl border border-white/10 bg-[#070a10] overflow-hidden font-mono text-xs">
+    <div className="my-3 rounded-2xl border border-slate-800 bg-[#1e293b] text-slate-200 overflow-hidden font-mono text-xs shadow-md">
       {/* Terminal Top Bar */}
-      <div className="flex items-center justify-between px-3.5 py-2 bg-slate-900/80 border-b border-white/10 text-slate-400 text-[11px]">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[#0f172a] border-b border-slate-700/80 text-gray-400 text-[11px]">
         <div className="flex items-center gap-2">
-          <TerminalIcon size={13} className="text-cyan-400" />
-          <span className="text-slate-300 font-semibold">PostgreSQL & pgvector Execution Telemetry</span>
+          <TerminalIcon size={13} className="text-red-400" />
+          <span className="text-slate-200 font-semibold">PostgreSQL & pgvector Query Telemetry</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-600" />
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-600" />
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
         </div>
       </div>
 
       {/* Terminal Output */}
-      <div className="p-3.5 overflow-x-auto whitespace-pre-wrap leading-relaxed text-slate-300 space-y-1">
+      <div className="p-4 overflow-x-auto whitespace-pre-wrap leading-relaxed text-slate-300 space-y-1">
         {lines.map((line, idx) => {
           if (!line.trim()) return null;
 
@@ -38,13 +38,13 @@ export const TerminalBlock: React.FC<TerminalBlockProps> = ({ log }) => {
 
             return (
               <div key={idx} className="flex gap-2 items-start">
-                <span className="text-cyan-400 font-bold select-none">$</span>
+                <span className="text-red-400 font-bold select-none">$</span>
                 <span
                   className={
                     isSuccess
                       ? 'text-emerald-400 font-semibold'
                       : isWarn
-                      ? 'text-amber-400'
+                      ? 'text-orange-400'
                       : isSql
                       ? 'text-cyan-300'
                       : 'text-slate-200'

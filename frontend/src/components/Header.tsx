@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, RotateCcw, Activity, ShieldAlert, Cpu, Settings } from 'lucide-react';
+import { Menu, RotateCcw, ShieldAlert, Settings, PhoneCall } from 'lucide-react';
 
 interface HeaderProps {
   title: string;
@@ -18,87 +18,93 @@ export const Header: React.FC<HeaderProps> = ({
   onClearChat,
   onOpenSettings,
   onOpenSos,
-  totalRecords = 105,
+  totalRecords = 106,
 }) => {
-  const getModeTitle = () => {
+  const getModeLabel = () => {
     switch (activeMode) {
       case 'complaint':
-        return 'Citizen Intake // e-FIR Filing Hub';
+        return 'e-FIR Intake Portal';
       case 'tracker':
-        return 'Investigation Timeline // Case Status Tracker';
+        return 'Investigation Timeline';
       case 'analytics':
-        return 'Threat Radar // Live Crime Intelligence';
+        return 'Suspect & Threat Radar';
       case 'ledger':
-        return 'PostgreSQL Ledger // Case Database Explorer';
+        return 'Database Reports';
       default:
-        return title || 'AI Crime Database Analyst';
+        return 'CrimeGPT v4.2.0-Alpha';
     }
   };
 
   return (
-    <header className="glass-header sticky top-0 z-30 h-16 px-4 md:px-6 flex items-center justify-between">
-      {/* Left: Mobile Menu & Breadcrumbs / Title */}
-      <div className="flex items-center gap-3 min-w-0">
+    <header className="h-16 flex items-center justify-between px-4 sm:px-8 z-40 bg-white/40 backdrop-blur-md border-b border-gray-200/80 sticky top-0">
+      {/* Left: Mobile Menu & CrimeGPT Tag */}
+      <div className="flex items-center gap-3">
         <button
           onClick={onOpenMobileMenu}
-          className="md:hidden p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
+          className="md:hidden p-2 rounded-lg hover:bg-gray-200 text-slate-700"
           id="btn-mobile-menu"
         >
           <Menu size={18} />
         </button>
 
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-semibold hidden sm:inline">
-              CRIME WATCH AI // AEGIS SENTINEL
-            </span>
-          </div>
-          <h1 className="text-sm md:text-base font-bold font-display text-white truncate">
-            {getModeTitle()}
-          </h1>
+        <div className="bg-[#f9fafb] border border-[#f3f4f6] rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm">
+          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider font-mono">
+            {getModeLabel()}
+          </span>
+          <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+          <span className="text-[10px] font-bold text-red-500 uppercase font-mono">
+            {totalRecords} CASES
+          </span>
         </div>
       </div>
 
-      {/* Right Action Icons & Live Badges */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        {/* Live Vector Engine Pill */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-white/10 text-[11px] font-mono text-slate-300">
-          <Cpu size={12} className="text-cyan-400" />
-          <span>PGVECTOR: CONNECTED</span>
-          <span className="text-slate-500">|</span>
-          <span className="text-cyan-400">{totalRecords} RECORDS</span>
-        </div>
-
-        {/* Emergency SOS Button */}
-        <button
-          onClick={onOpenSos}
-          className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 hover:text-rose-200 border border-rose-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(244,63,94,0.15)]"
-        >
-          <ShieldAlert size={14} className="text-rose-400" />
-          <span>Emergency SOS</span>
-        </button>
-
+      {/* Right: Investigator Profile & Actions */}
+      <div className="flex items-center gap-3 sm:gap-4">
+        {/* Reset Active Chat Button */}
         {activeMode === 'chat' && (
           <button
             onClick={onClearChat}
-            title="Reset active chat session"
-            className="px-3 py-1.5 rounded-xl btn-secondary text-xs font-medium flex items-center gap-1.5"
+            title="Reset active query"
+            className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all"
             id="btn-clear-chat"
           >
-            <RotateCcw size={13} />
+            <RotateCcw size={13} className="text-gray-500" />
             <span className="hidden sm:inline">Reset</span>
           </button>
         )}
 
+        {/* Emergency SOS Button */}
+        <button
+          onClick={onOpenSos}
+          className="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+        >
+          <ShieldAlert size={14} className="text-red-500" />
+          <span className="hidden sm:inline">Emergency SOS</span>
+        </button>
+
+        {/* Settings button */}
         <button
           onClick={onOpenSettings}
-          title="Telemetry & Config"
-          className="p-2 rounded-xl btn-secondary text-slate-400 hover:text-white"
-          id="btn-settings"
+          className="p-2 rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-slate-600 shadow-sm"
+          title="Telemetry Settings"
         >
-          <Settings size={16} />
+          <Settings size={15} />
         </button>
+
+        {/* Investigator Profile */}
+        <div className="flex items-center gap-3 pl-2 border-l border-gray-200">
+          <div className="text-right hidden sm:block">
+            <p className="text-xs font-bold text-slate-800">Det. Marcus Thorne</p>
+            <p className="text-[10px] text-gray-400 font-mono">m.thorne@precinct-09.gov</p>
+          </div>
+          <div className="w-9 h-9 rounded-full border-2 border-white shadow-md overflow-hidden bg-red-100 shrink-0">
+            <img
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus"
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
       </div>
     </header>
   );

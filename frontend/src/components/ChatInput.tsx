@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, Loader2, Cpu, Mic, Paperclip } from 'lucide-react';
+import React, { useState } from 'react';
+import { Paperclip, Mic, ArrowUp, Loader2 } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -8,87 +8,91 @@ interface ChatInputProps {
 
 export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
   const [input, setInput] = useState('');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
-    }
-  }, [input]);
+  const [isRecording, setIsRecording] = useState(false);
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!input.trim() || isLoading) return;
     onSendMessage(input.trim());
     setInput('');
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-    }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
       e.preventDefault();
       handleSubmit();
     }
   };
 
+  const handleVoiceToggle = () => {
+    setIsRecording(!isRecording);
+    if (!isRecording) {
+      // Mock voice assistant prompt
+      setInput('Show high severity robbery and theft cases reported in 2026');
+    }
+  };
+
   return (
-    <div className="glass-footer sticky bottom-0 p-3 md:p-4 z-20">
-      <div className="max-w-4xl mx-auto">
+    <div className="fixed bottom-0 left-0 right-0 md:left-[288px] px-4 sm:px-6 py-6 flex flex-col items-center bg-gradient-to-t from-[#f0e6dd] via-[#f0e6dd]/90 to-transparent pointer-events-none z-30">
+      <div className="max-w-4xl w-full pointer-events-auto">
         <form
           onSubmit={handleSubmit}
-          className="cyber-panel p-3 bg-slate-900/90 border-white/15 focus-within:border-cyan-500/60 focus-within:shadow-[0_0_25px_rgba(6,182,212,0.2)] transition-all flex flex-col gap-2 rounded-2xl"
+          className="bg-[#f9fafb] border border-gray-200/90 rounded-[28px] p-2 flex items-center shadow-xl shadow-slate-900/5 focus-within:ring-2 focus-within:ring-red-500/30 transition-all"
         >
-          {/* Textarea */}
-          <textarea
-            ref={textareaRef}
-            rows={1}
+          {/* Main Input */}
+          <input
+            type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask about crime cases, specific cities, stolen items, or suspect profiles..."
             disabled={isLoading}
-            className="w-full bg-transparent border-none outline-none text-white placeholder:text-slate-500 text-sm font-sans resize-none max-h-40 leading-relaxed px-2"
-            id="chat-input-textarea"
+            placeholder="Describe the case details or query by city, crime type, or suspect..."
+            className="flex-1 bg-transparent px-5 py-3 text-xs sm:text-sm focus:outline-none placeholder:text-gray-400 text-slate-800"
+            id="chat-input-field"
           />
 
-          {/* Bottom Bar */}
-          <div className="flex items-center justify-between pt-1 border-t border-white/5 text-xs text-slate-400">
-            {/* Model Pill */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950 border border-white/10 text-[11px] font-mono text-cyan-300">
-                <Cpu size={12} className="text-cyan-400" />
-                <span>LangChain4j + pgvector</span>
-              </div>
-            </div>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-1.5 sm:gap-2 pr-1.5">
+            <button
+              type="button"
+              className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
+              title="Attach digital evidence file"
+              onClick={() => setInput((prev) => prev ? prev + ' [Attached Evidence File: FIR-Report.pdf]' : 'Analyze attached forensic report [FIR-Report.pdf]')}
+            >
+              <Paperclip size={18} />
+            </button>
 
-            {/* Right: Hint + Submit Button */}
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-mono text-slate-500 hidden sm:inline">
-                ⏎ to execute query
-              </span>
+            <button
+              type="button"
+              onClick={handleVoiceToggle}
+              className={`p-2 transition-colors rounded-full ${
+                isRecording
+                  ? 'text-red-500 bg-red-50 animate-pulse'
+                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+              }`}
+              title="Voice Query Input"
+            >
+              <Mic size={18} />
+            </button>
 
-              <button
-                type="submit"
-                disabled={!input.trim() || isLoading}
-                className="w-8 h-8 rounded-xl btn-primary flex items-center justify-center disabled:opacity-40 transition-all shadow-md shadow-cyan-500/20"
-                id="btn-send-message"
-                title="Send query"
-              >
-                {isLoading ? (
-                  <Loader2 size={15} className="animate-spin text-white" />
-                ) : (
-                  <ArrowUp size={16} strokeWidth={2.5} className="text-white" />
-                )}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              className="w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center hover:bg-[#ef4444] transition-all transform active:scale-90 disabled:opacity-40 disabled:hover:bg-slate-800 shrink-0 shadow-md shadow-slate-800/20"
+              id="send-btn"
+              title="Send Query"
+            >
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin text-white" />
+              ) : (
+                <ArrowUp size={18} strokeWidth={2.5} />
+              )}
+            </button>
           </div>
         </form>
 
-        <p className="text-[11px] text-slate-500 text-center mt-2 font-mono">
-          Aegis Crime AI retrieves grounded evidence from PostgreSQL. All data is for law enforcement demonstration.
+        <p className="text-[11px] text-gray-500 text-center mt-2.5 font-medium">
+          CrimsonLogic provides intelligence support. All insights should be verified by a certified human investigator before formal reporting.
         </p>
       </div>
     </div>

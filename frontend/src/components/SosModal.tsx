@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PhoneCall, ShieldAlert, AlertOctagon, X, Copy, Check, ExternalLink } from 'lucide-react';
+import { PhoneCall, ShieldAlert, AlertOctagon, X, Copy, Check } from 'lucide-react';
 
 interface SosModalProps {
   isOpen: boolean;
@@ -11,14 +11,14 @@ const EMERGENCY_SERVICES = [
     number: '112',
     title: 'National Emergency Response (All-in-One)',
     desc: 'Unified emergency response for Police, Fire, Ambulance & Disaster.',
-    color: '#f43f5e',
+    color: '#ef4444',
     badge: '24/7 TOLL-FREE',
   },
   {
     number: '1930',
-    title: 'National Cyber Financial Crime Reporting',
+    title: 'National Cyber Financial Crime Helpline',
     desc: 'Instant freeze helpline for cyber banking, UPI fraud & phishing.',
-    color: '#06b6d4',
+    color: '#3b82f6',
     badge: 'CYBER HELPLINE',
   },
   {
@@ -32,7 +32,7 @@ const EMERGENCY_SERVICES = [
     number: '1098',
     title: 'Childline Emergency Service',
     desc: 'Protection, rescue and counseling helpline for children in distress.',
-    color: '#f59e0b',
+    color: '#f97316',
     badge: 'CHILD PROTECTION',
   },
   {
@@ -57,30 +57,30 @@ export const SosModal: React.FC<SosModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn"
       onClick={onClose}
     >
       <div
-        className="cyber-panel p-6 w-full max-w-xl space-y-5 bg-slate-900/95 border-rose-500/40 shadow-[0_0_60px_rgba(244,63,94,0.2)] animate-in zoom-in-95 duration-200"
+        className="p-6 md:p-8 w-full max-w-xl space-y-5 bg-white rounded-[28px] border border-gray-200 shadow-2xl animate-fadeIn"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="flex items-center justify-between pb-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+            <div className="w-10 h-10 rounded-2xl bg-red-100 flex items-center justify-center text-red-600 shadow-xs">
               <AlertOctagon size={22} className="animate-pulse" />
             </div>
             <div>
-              <h3 className="text-lg font-bold font-display text-white">
+              <h3 className="text-lg font-bold text-slate-800">
                 Emergency SOS & Citizen Hotlines
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-gray-500">
                 Direct nationwide contact numbers for immediate law enforcement dispatch.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white"
+            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-slate-800"
           >
             <X size={18} />
           </button>
@@ -90,7 +90,7 @@ export const SosModal: React.FC<SosModalProps> = ({ isOpen, onClose }) => {
           {EMERGENCY_SERVICES.map((srv) => (
             <div
               key={srv.number}
-              className="p-4 rounded-xl bg-slate-950/60 border border-white/5 hover:border-white/15 transition-all flex items-center justify-between gap-4"
+              className="p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-red-200 transition-all flex items-center justify-between gap-4"
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
@@ -101,35 +101,35 @@ export const SosModal: React.FC<SosModalProps> = ({ isOpen, onClose }) => {
                     {srv.number}
                   </span>
                   <span
-                    className="text-[10px] font-mono px-2 py-0.5 rounded font-bold"
+                    className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold"
                     style={{
-                      backgroundColor: `${srv.color}20`,
+                      backgroundColor: `${srv.color}15`,
                       color: srv.color,
-                      border: `1px solid ${srv.color}40`,
+                      border: `1px solid ${srv.color}30`,
                     }}
                   >
                     {srv.badge}
                   </span>
                 </div>
-                <h4 className="text-xs font-semibold text-white">{srv.title}</h4>
-                <p className="text-[11px] text-slate-400">{srv.desc}</p>
+                <h4 className="text-xs font-bold text-slate-800">{srv.title}</h4>
+                <p className="text-[11px] text-gray-500 leading-relaxed">{srv.desc}</p>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => handleCopy(srv.number)}
-                  className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs flex items-center gap-1 transition-colors"
+                  className="p-2 rounded-xl bg-white hover:bg-gray-100 text-slate-600 border border-gray-200 text-xs flex items-center gap-1 transition-colors shadow-xs"
                   title="Copy Number"
                 >
                   {copiedNumber === srv.number ? (
-                    <Check size={14} className="text-emerald-400" />
+                    <Check size={14} className="text-emerald-500" />
                   ) : (
                     <Copy size={14} />
                   )}
                 </button>
                 <a
                   href={`tel:${srv.number}`}
-                  className="px-3 py-1.5 rounded-lg font-semibold text-xs text-white flex items-center gap-1 shadow-md transition-transform hover:scale-105"
+                  className="px-3.5 py-2 rounded-xl font-bold text-xs text-white flex items-center gap-1 shadow-md transition-transform hover:scale-105"
                   style={{ backgroundColor: srv.color }}
                 >
                   <PhoneCall size={13} />
@@ -140,8 +140,8 @@ export const SosModal: React.FC<SosModalProps> = ({ isOpen, onClose }) => {
           ))}
         </div>
 
-        <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-500/20 text-[11px] text-rose-300 flex items-start gap-2">
-          <ShieldAlert size={14} className="shrink-0 mt-0.5" />
+        <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-[11px] text-red-700 flex items-start gap-2 font-medium">
+          <ShieldAlert size={14} className="shrink-0 mt-0.5 text-red-500" />
           <span>If you are in immediate life-threatening danger, dial <strong>112</strong> immediately.</span>
         </div>
       </div>

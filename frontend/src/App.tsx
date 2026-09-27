@@ -13,11 +13,13 @@ import {
   ChatMessage,
   ConversationSession,
   DatabaseStats,
+  AnalyticsData,
 } from './types/chat';
 import {
   sendChatMessage,
   fetchSampleQueries,
   fetchDatabaseStats,
+  fetchAnalyticsApi,
   clearSessionApi,
 } from './api/chatApi';
 
@@ -28,7 +30,7 @@ export const App: React.FC = () => {
   const [sessions, setSessions] = useState<ConversationSession[]>(() => [
     {
       id: 'session-1',
-      title: 'Vehicle Theft Analysis',
+      title: 'Active Case Discovery',
       lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       messages: [],
     },
@@ -38,6 +40,7 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [sampleQueries, setSampleQueries] = useState<string[]>([]);
   const [stats, setStats] = useState<DatabaseStats | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isSosOpen, setIsSosOpen] = useState<boolean>(false);
@@ -47,6 +50,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     fetchSampleQueries().then(setSampleQueries);
     fetchDatabaseStats().then(setStats);
+    fetchAnalyticsApi().then(setAnalytics).catch(() => {});
   }, []);
 
   const handleSendMessage = async (text: string) => {
@@ -91,8 +95,9 @@ export const App: React.FC = () => {
         prev.map((s) => (s.id === activeSessionId ? { ...s, messages: [...s.messages, agentMsg] } : s))
       );
 
-      // Refresh database stats count
+      // Refresh database stats & analytics
       fetchDatabaseStats().then(setStats);
+      fetchAnalyticsApi().then(setAnalytics).catch(() => {});
     } catch (error: any) {
       const errorMsg: ChatMessage = {
         id: `msg-${Date.now()}-error`,
@@ -114,7 +119,7 @@ export const App: React.FC = () => {
     const newSessionId = `session-${Date.now()}`;
     const newSession: ConversationSession = {
       id: newSessionId,
-      title: 'New Investigation Query',
+      title: 'New Case Inquiry',
       lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       messages: [],
     };
@@ -140,8 +145,11 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-[#07090e] text-slate-100 overflow-hidden font-sans">
-      {/* Cyber Sidebar */}
+    <div
+      className="flex h-screen w-screen overflow-hidden"
+      style={{ background: 'var(--bg-gradient)' }}
+    >
+      {/* CrimsonLogic Sidebar */}
       <Sidebar
         sessions={sessions}
         activeSessionId={activeSessionId}
@@ -153,11 +161,12 @@ export const App: React.FC = () => {
         onCloseMobile={() => setIsMobileMenuOpen(false)}
         onOpenSos={() => setIsSosOpen(true)}
         stats={stats}
+        analytics={analytics}
       />
 
-      {/* Main Command Center Canvas */}
-      <div className="flex-1 flex flex-col h-screen min-w-0 md:pl-72 bg-[#07090e] grid-mesh relative">
-        {/* Sticky Top Telemetry Bar */}
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col h-screen min-w-0 md:pl-[288px] relative overflow-hidden">
+        {/* Header */}
         <Header
           title={activeSession.title}
           activeMode={activeMode}
@@ -165,12 +174,12 @@ export const App: React.FC = () => {
           onClearChat={handleClearChat}
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenSos={() => setIsSosOpen(true)}
-          totalRecords={stats?.totalRecords || 105}
+          totalRecords={stats?.totalRecords || 106}
         />
 
-        {/* Dynamic Mode Switcher Views */}
+        {/* Dynamic Views */}
         {activeMode === 'chat' && (
-          <>
+          <main className="flex-1 flex flex-col relative overflow-hidden">
             <ChatFeed
               messages={activeSession.messages}
               isLoading={isLoading}
@@ -178,7 +187,7 @@ export const App: React.FC = () => {
               onSelectSampleQuery={handleSendMessage}
             />
             <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
-          </>
+          </main>
         )}
 
         {activeMode === 'complaint' && (
@@ -207,7 +216,7 @@ export const App: React.FC = () => {
       {/* Emergency SOS Modal */}
       <SosModal isOpen={isSosOpen} onClose={() => setIsSosOpen(false)} />
 
-      {/* Telemetry & Architecture Settings Modal */}
+      {/* Settings / Architecture Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}

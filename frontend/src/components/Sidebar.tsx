@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import {
-  MessageSquare,
-  Plus,
+  ShieldAlert,
   Search,
-  Shield,
+  Briefcase,
+  Fingerprint,
+  Users,
+  FileText,
   FilePlus2,
   Clock,
-  BarChart3,
-  Database,
-  PhoneCall,
   Sparkles,
-  ChevronRight,
+  PhoneCall,
   X,
-  Radio,
+  Database,
+  Plus,
 } from 'lucide-react';
-import { ConversationSession, DatabaseStats } from '../types/chat';
+import { ConversationSession, DatabaseStats, AnalyticsData } from '../types/chat';
 
 interface SidebarProps {
   sessions: ConversationSession[];
@@ -27,6 +27,7 @@ interface SidebarProps {
   onCloseMobile: () => void;
   onOpenSos: () => void;
   stats: DatabaseStats | null;
+  analytics: AnalyticsData | null;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -40,228 +41,238 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   onOpenSos,
   stats,
+  analytics,
 }) => {
-  const [searchFilter, setSearchFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const filteredSessions = sessions.filter((s) =>
-    s.title.toLowerCase().includes(searchFilter.toLowerCase())
+    s.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const NAV_ITEMS = [
     {
       id: 'chat',
-      label: 'AI Crime Analyst',
-      icon: MessageSquare,
-      badge: 'LLM RAG',
-      color: '#3b82f6',
+      label: 'Case Search & AI',
+      icon: Briefcase,
+      tooltipTitle: 'Case Discovery',
+      tooltipDesc: 'Access global investigation records with semantic RAG lookup.',
+      hasPulse: true,
     },
     {
       id: 'complaint',
-      label: 'Register e-FIR / Complaint',
+      label: 'Register e-FIR',
       icon: FilePlus2,
-      badge: 'NEW',
-      color: '#06b6d4',
+      tooltipTitle: 'Citizen & Officer Intake',
+      tooltipDesc: 'Submit incident report with real-time AI triage and vector indexing.',
+      hasPulse: false,
     },
     {
       id: 'tracker',
-      label: 'Track Case Status',
-      icon: Clock,
-      badge: 'LIVE',
-      color: '#6366f1',
+      label: 'Case & Evidence Tracker',
+      icon: Fingerprint,
+      tooltipTitle: 'Investigation Timeline',
+      tooltipDesc: 'Cross-reference case milestones, forensics, and status updates.',
+      hasPulse: false,
     },
     {
       id: 'analytics',
-      label: 'Crime Threat Radar',
-      icon: BarChart3,
-      badge: 'METRICS',
-      color: '#f59e0b',
+      label: 'Suspect & Threat Radar',
+      icon: Users,
+      tooltipTitle: 'Target Profiling & Density',
+      tooltipDesc: 'Real-time city threat heatmap, crime categories, and active watchlist.',
+      hasPulse: false,
     },
     {
       id: 'ledger',
-      label: 'Case Records Ledger',
-      icon: Database,
-      badge: '105+',
-      color: '#10b981',
+      label: 'Reports & Ledger',
+      icon: FileText,
+      tooltipTitle: 'Database Repository',
+      tooltipDesc: 'Explore 105+ PostgreSQL records with instant filters.',
+      hasPulse: false,
     },
   ];
+
+  const activeCount = analytics ? analytics.openCases + analytics.underInvestigationCases : 12;
+  const pendingCount = analytics ? analytics.underInvestigationCases : 48;
+  const closedCount = analytics ? analytics.closedCases : 8;
 
   return (
     <>
       {/* Mobile Backdrop */}
       {isOpenMobile && (
         <div
-          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden animate-in fade-in"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden animate-fadeIn"
           onClick={onCloseMobile}
         />
       )}
 
-      {/* Main Sidebar */}
+      {/* CrimsonLogic Sidebar */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#090d16] border-r border-white/10 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-[288px] bg-[#F9F9F9] border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Brand Header */}
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-0.5 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-              <div className="w-full h-full bg-[#090d16] rounded-[10px] flex items-center justify-center text-cyan-400">
-                <Shield size={20} />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-base font-bold font-display text-white tracking-wide">
-                  AEGIS CRIME AI
+        <div className="p-6 flex flex-col h-full overflow-y-auto">
+          {/* Logo */}
+          <div className="flex items-center justify-between gap-3 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-[#ef4444] rounded-[12px] flex items-center justify-center text-white shadow-lg relative shrink-0">
+                <ShieldAlert size={22} />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
+                  <span className="w-1.5 h-1.5 bg-red-500 rounded-full pulse-red"></span>
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-cyan-400 font-semibold tracking-wider uppercase block">
-                Law Enforcement Hub
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={onCloseMobile}
-            className="md:hidden p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white"
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        {/* Primary Command Navigation */}
-        <div className="p-3 border-b border-white/5 space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-500 px-3 py-1 font-semibold">
-            Command Center
-          </div>
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeMode === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  onSelectMode(item.id);
-                  if (isOpenMobile) onCloseMobile();
-                }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                  isActive
-                    ? 'bg-cyan-500/15 text-white border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.15)] font-semibold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <Icon
-                    size={16}
-                    style={{ color: isActive ? '#06b6d4' : item.color }}
-                  />
-                  <span>{item.label}</span>
-                </div>
-                <span
-                  className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                    isActive
-                      ? 'bg-cyan-400 text-black font-extrabold'
-                      : 'bg-white/5 text-slate-400'
-                  }`}
-                >
-                  {item.badge}
+              <div>
+                <span className="text-slate-800 font-bold text-lg tracking-tight block">
+                  CrimsonLogic
                 </span>
-              </button>
-            );
-          })}
-        </div>
+                <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider block font-mono">
+                  Criminal Justice AI
+                </span>
+              </div>
+            </div>
 
-        {/* AI Chat History Section */}
-        <div className="flex-1 flex flex-col min-h-0 p-3 space-y-3">
-          {/* New Chat Button */}
-          <button
-            onClick={() => {
-              onSelectMode('chat');
-              onNewChat();
-              if (isOpenMobile) onCloseMobile();
-            }}
-            className="w-full py-2.5 px-3.5 rounded-xl btn-primary text-xs font-semibold flex items-center justify-center gap-2 shadow-md shadow-blue-500/20"
-          >
-            <Plus size={15} />
-            <span>New Investigation Query</span>
-          </button>
+            <button
+              onClick={onCloseMobile}
+              className="md:hidden p-1.5 rounded-lg hover:bg-gray-200 text-gray-500"
+            >
+              <X size={18} />
+            </button>
+          </div>
 
-          {/* Search Chats */}
-          <div className="relative">
-            <Search size={13} className="absolute left-3 top-2.5 text-slate-500" />
+          {/* Search Box */}
+          <div className="relative mb-5">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search past sessions..."
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-900/60 border border-white/5 text-xs text-slate-300 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+              placeholder="Search investigations..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-white border border-gray-200 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-red-500/20 text-slate-800 placeholder:text-gray-400"
             />
           </div>
 
-          {/* Session List */}
-          <div className="flex-1 overflow-y-auto space-y-1 pr-1">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-500 px-2 py-1 font-semibold">
-              Recent Inquiries
-            </div>
-            {filteredSessions.map((session) => {
-              const isSessionActive =
-                activeMode === 'chat' && session.id === activeSessionId;
+          {/* Primary Navigation */}
+          <nav className="space-y-1 mb-4">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeMode === item.id;
               return (
-                <button
-                  key={session.id}
-                  onClick={() => {
-                    onSelectMode('chat');
-                    onSelectSession(session.id);
-                    if (isOpenMobile) onCloseMobile();
-                  }}
-                  className={`w-full text-left p-2.5 rounded-xl text-xs transition-all flex items-center justify-between group ${
-                    isSessionActive
-                      ? 'bg-blue-500/15 border border-blue-500/30 text-white font-medium'
-                      : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <MessageSquare
-                      size={14}
-                      className={isSessionActive ? 'text-cyan-400' : 'text-slate-500'}
-                    />
-                    <span className="truncate">{session.title}</span>
+                <div key={item.id} className="relative group">
+                  <button
+                    onClick={() => {
+                      onSelectMode(item.id);
+                      if (isOpenMobile) onCloseMobile();
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold rounded-xl transition-all ${
+                      isActive
+                        ? 'bg-red-500 text-white shadow-md shadow-red-500/25 font-bold'
+                        : 'text-slate-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon
+                        size={17}
+                        className={isActive ? 'text-white' : 'text-slate-500'}
+                      />
+                      <span>{item.label}</span>
+                    </div>
+                    {item.hasPulse && !isActive && (
+                      <span className="w-2 h-2 bg-red-500 rounded-full pulse-red"></span>
+                    )}
+                  </button>
+
+                  {/* Tooltip on hover */}
+                  <div className="hidden lg:block absolute left-full ml-4 top-1/2 -translate-y-1/2 dark-glass px-4 py-3 rounded-2xl w-48 shadow-2xl z-[60] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all">
+                    <p className="text-white text-xs font-bold mb-0.5">{item.tooltipTitle}</p>
+                    <p className="text-gray-300 text-[10px] leading-relaxed">{item.tooltipDesc}</p>
                   </div>
-                  <ChevronRight
-                    size={13}
-                    className="opacity-0 group-hover:opacity-100 text-slate-500 transition-opacity"
-                  />
-                </button>
+                </div>
               );
             })}
+          </nav>
+
+          {/* Live Case Updates Section */}
+          <div className="pt-4 pb-4 border-t border-gray-200">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3">
+              Live Case Updates
+            </span>
+            <div className="mt-3 space-y-2 px-1">
+              <div className="flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-100">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                  <span className="text-[11px] font-semibold text-slate-700">Active Cases</span>
+                </div>
+                <span className="bg-red-50 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  {activeCount}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-100">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>
+                  <span className="text-[11px] font-semibold text-slate-700">Pending Review</span>
+                </div>
+                <span className="bg-orange-50 text-orange-500 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  {pendingCount}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-100">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                  <span className="text-[11px] font-semibold text-slate-700">Closed Resolved</span>
+                </div>
+                <span className="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  {closedCount}
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Bottom Emergency SOS & Stats Banner */}
-        <div className="p-3 border-t border-white/10 space-y-2 bg-slate-950/80">
-          {/* Quick SOS Bar */}
-          <button
-            onClick={onOpenSos}
-            className="w-full p-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 text-xs font-semibold flex items-center justify-between transition-all"
-          >
-            <div className="flex items-center gap-2">
-              <PhoneCall size={14} className="text-rose-400 animate-pulse" />
-              <span>National Helpline (112 / 1930)</span>
-            </div>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">
-              SOS
-            </span>
-          </button>
+          {/* Emergency SOS Bar */}
+          <div className="mb-4">
+            <button
+              onClick={onOpenSos}
+              className="w-full py-2 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-600 text-xs font-bold flex items-center justify-between transition-all"
+            >
+              <div className="flex items-center gap-2">
+                <PhoneCall size={14} className="text-red-500 animate-pulse" />
+                <span>Emergency SOS (112 / 1930)</span>
+              </div>
+              <span className="text-[9px] bg-red-500 text-white font-mono px-1.5 py-0.2 rounded font-bold">
+                24/7
+              </span>
+            </button>
+          </div>
 
-          {/* Database Live Telemetry */}
-          <div className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-400">
-            <div className="flex items-center gap-2">
-              <span className="radar-blip"></span>
-              <span>pgvector Embeddings</span>
+          {/* Upgrade Card / Advanced RAG */}
+          <div className="mt-auto">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-red-50 to-orange-50 border border-red-100 relative overflow-hidden">
+              <div className="flex justify-between items-start mb-2">
+                <span className="bg-red-500 text-[10px] font-bold text-white px-2 py-0.5 rounded-full uppercase tracking-widest font-mono">
+                  Active
+                </span>
+                <span className="text-[10px] font-mono text-slate-500">
+                  {stats?.totalRecords || 106} cases
+                </span>
+              </div>
+              <p className="text-xs font-bold text-slate-800 mb-0.5">
+                LangChain4j + pgvector
+              </p>
+              <p className="text-[10px] text-gray-500 mb-3 leading-relaxed">
+                Dense 384-dim semantic ranking & grounded synthesis enabled.
+              </p>
+              <button
+                onClick={() => {
+                  onSelectMode('chat');
+                  onNewChat();
+                  if (isOpenMobile) onCloseMobile();
+                }}
+                className="w-full bg-white text-red-500 text-[11px] font-bold py-2 rounded-lg border border-red-200 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                <Plus size={13} />
+                New Investigation
+              </button>
             </div>
-            <span className="text-cyan-400 font-bold">
-              {stats?.totalRecords || 105} Records
-            </span>
           </div>
         </div>
       </aside>
