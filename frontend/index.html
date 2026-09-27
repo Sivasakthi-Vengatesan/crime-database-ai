@@ -2,16 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C4552F' stroke-width='2'><path d='M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z'/><line x1='16' y1='8' x2='2' y2='22'/><line x1='17.5' y1='15' x2='9' y2='15'/></svg>" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230ea968'><path d='M12 2C6.48 2 2 6.48 2 12c0 3.7 2.01 6.94 5 8.68V14a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v6.68c2.99-1.74 5-4.98 5-8.68 0-5.52-4.48-10-10-10z'/></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Terra — Crime Database AI</title>
-    <!-- Fraunces (Editorial Serif Display), Inter (Body & UI), JetBrains Mono (Code) -->
+    <title>Verde — AI Workspace</title>
+    <meta name="description" content="Verde AI builder workspace and coding agent interface with live artifact preview." />
+    <!-- Space Grotesk, Inter, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              canvas: '#fcfdfc',
+              ink: '#131815',
+              muted: '#5b655e',
+              hairline: '#e4e9e4',
+              iconRail: '#eef1ed',
+              previewStage: '#f1f5f1',
+              emerald: {
+                DEFAULT: '#0ea968',
+                deep: '#0b8a54',
+                tint: '#e7f4ec',
+                border: '#cde7d7',
+              },
+            },
+            fontFamily: {
+              display: ['"Space Grotesk"', 'sans-serif'],
+              sans: ['Inter', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+          },
+        },
+      }
+    </script>
   </head>
-  <body class="bg-[#FAF6F0] text-[#1A1A1A] antialiased">
+  <body class="bg-[#fcfdfc] text-[#131815] antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+
+
+

@@ -120,4 +120,59 @@ INSERT INTO crime_records (case_id, crime_type, location, incident_date, descrip
 ('CASE-1102', 'Vehicle Theft', 'Mumbai', '2026-02-25', 'Vintage convertible car stolen from private collector garage in South Mumbai.', 61, NULL, 'Under Investigation', 'High'),
 ('CASE-1103', 'Fraud', 'Chennai', '2026-06-16', 'Job seekers scammed with forged appointment letters for government railway positions.', 24, 45, 'Under Investigation', 'High'),
 ('CASE-1104', 'Drug-related offences', 'Kolkata', '2026-04-12', 'Peddling synthetic narcotics outside an educational institute; two suspects arrested with 120 grams contraband.', 20, 22, 'Closed', 'High'),
-('CASE-1105', 'Cybercrime', 'Delhi', '2026-07-23', 'Corporate cloud infrastructure compromised with illicit crypto-mining scripts executed without authorization.', NULL, NULL, 'Under Investigation', 'High');
+('CASE-1105', 'Cybercrime', 'Delhi', '2026-07-23', 'Corporate cloud infrastructure compromised with illicit crypto-mining scripts executed without authorization.', NULL, NULL, 'Under Investigation', 'High'),
+
+('CASE-1106', 'Fraud', 'Chennai', '2026-08-01', 'Senior citizen duped of life savings by fraudsters posing as CBI cyber-crime officers over a 4-hour video call demanding digital arrest compliance.', 71, 29, 'Open', 'Critical'),
+('CASE-1107', 'Mobile Phone Theft', 'Bengaluru', '2026-08-03', 'Smart device snatched from software architect hand while waiting for a cab outside a tech park campus.', 31, 21, 'Under Investigation', 'Medium'),
+('CASE-1108', 'Vehicle Theft', 'Hyderabad', '2026-08-05', 'Electric SUV with keyless entry stolen from a supermarket outdoor parking bay using relay attack hardware.', 36, NULL, 'Open', 'High'),
+('CASE-1109', 'Burglary', 'Coimbatore', '2026-08-07', 'Gold jewelry manufacturing workshop broken into through rear ventilator window; 450 grams of uncut gold bars stolen.', 49, 32, 'Under Investigation', 'High'),
+('CASE-1110', 'Cybercrime', 'Pune', '2026-08-10', 'Unauthorized SIM swap attack triggered drain of investment portfolio and fixed deposits within 15 minutes.', 44, NULL, 'Open', 'Critical'),
+
+('CASE-1111', 'Robbery', 'Delhi', '2026-08-12', 'Delivery truck carrying high-end mobile handsets hijacked on outer ring road by four armed suspects in a stolen van.', 34, 28, 'Under Investigation', 'Critical'),
+('CASE-1112', 'Theft', 'Kolkata', '2026-08-14', 'Ancient bronze idol and temple bell reported missing from private family altar in an ancestral heritage mansion.', 63, NULL, 'Open', 'Medium'),
+('CASE-1113', 'Missing Person', 'Kochi', '2026-08-16', 'Commercial diver disappeared during solo survey dive near port outer breakwater channel.', 29, NULL, 'Under Investigation', 'Critical'),
+('CASE-1114', 'Assault', 'Madurai', '2026-08-18', 'Violent confrontation between rival market vendor associations resulting in two serious hospitalizations.', 38, 24, 'Closed', 'High'),
+('CASE-1115', 'Drug-related offences', 'Mumbai', '2026-08-20', 'Undercover customs raid intercepted 2.4 kilograms of synthetic narcotics concealed inside industrial machine spare parts.', 41, 37, 'Closed', 'High'),
+
+('CASE-1116', 'Vehicle Theft', 'Chennai', '2026-08-22', 'Luxury motorcycle with GPS tracker disabled stolen from private villa porch in coastal residential enclave.', 27, NULL, 'Open', 'Medium'),
+('CASE-1117', 'Cybercrime', 'Bengaluru', '2026-08-24', 'Malicious deepfake video impersonating CEO sent to finance department instructing emergency offshore wire transfer.', 52, NULL, 'Under Investigation', 'Critical'),
+('CASE-1118', 'Theft', 'Mumbai', '2026-08-26', 'Diamond-studded necklace vanished from VIP dressing room during celebrity fashion gala.', 33, NULL, 'Under Investigation', 'High'),
+('CASE-1119', 'Burglary', 'Delhi', '2026-08-28', 'Cooperative bank branch vault breached from adjoining basement tunnel over a long holiday weekend.', NULL, 35, 'Under Investigation', 'Critical'),
+('CASE-1120', 'Mobile Phone Theft', 'Hyderabad', '2026-08-30', 'Flagship smartphone slipped from commuter blazer pocket while navigating the airport metro interchange.', 25, NULL, 'Open', 'Low'),
+
+('CASE-1121', 'Fraud', 'Kolkata', '2026-09-01', 'Ponzi scheme disguised as solar rooftop green-energy bonds defrauded 140 retired school teachers.', 66, 48, 'Under Investigation', 'High'),
+('CASE-1122', 'Vandalism', 'Pune', '2026-09-03', 'Automated traffic surveillance cameras and radar speed sensors smashed with iron rods along arterial expressway.', NULL, 22, 'Closed', 'Low'),
+('CASE-1123', 'Missing Person', 'Coimbatore', '2026-09-05', 'Botanical research scholar went missing while cataloging flora inside western ghats reserve forest.', 26, NULL, 'Open', 'Critical'),
+('CASE-1124', 'Assault', 'Chennai', '2026-09-07', 'Night-shift cab driver assaulted and robbed of earnings by two unruly passengers near suburban toll plaza.', 39, 23, 'Closed', 'Medium'),
+('CASE-1125', 'Vehicle Theft', 'Madurai', '2026-09-09', 'Heavy tractor with agricultural attachment stolen from farm shed overnight.', 54, NULL, 'Open', 'Low'),
+
+('CASE-1126', 'Cybercrime', 'Kochi', '2026-09-11', 'Hospital patient health records database compromised by ransomware demanding extortion payout.', NULL, NULL, 'Under Investigation', 'Critical'),
+('CASE-1127', 'Robbery', 'Mumbai', '2026-09-13', 'Jewelry store salesman intercepted with diamond sample briefcase outside suburban train terminus.', 47, 30, 'Open', 'High'),
+('CASE-1128', 'Mobile Phone Theft', 'Chennai', '2026-09-15', 'Cellular phone stolen from university library charging locker after lock mechanism was picked.', 20, 19, 'Open', 'Low'),
+('CASE-1129', 'Burglary', 'Bengaluru', '2026-09-17', 'Penthouse apartment in gated community burgled while owners were abroad; safe opened with specialized grinder.', 45, NULL, 'Under Investigation', 'High'),
+('CASE-1130', 'Theft', 'Hyderabad', '2026-09-19', 'Copper wiring and power transformer coils stripped from solar farm power grid causing blackouts.', 50, 27, 'Closed', 'Medium'),
+
+('CASE-1131', 'Drug-related offences', 'Delhi', '2026-09-21', 'Inter-state courier consignment with false-bottom luggage intercepted containing 1500 psychoactive tablets.', 28, 32, 'Closed', 'High'),
+('CASE-1132', 'Fraud', 'Pune', '2026-09-23', 'Bogus job placement agency collected processing fees from 85 engineering graduates for non-existent overseas positions.', 23, 42, 'Under Investigation', 'High'),
+('CASE-1133', 'Assault', 'Kolkata', '2026-09-25', 'Hospital emergency ward doctor physically assaulted by patient relatives following cardiac fatality.', 35, 29, 'Closed', 'High'),
+('CASE-1134', 'Vehicle Theft', 'Bengaluru', '2026-09-27', 'Fleet of three commercial delivery e-scooters hotwired and stolen from charging depot.', 31, NULL, 'Open', 'Medium'),
+('CASE-1135', 'Missing Person', 'Mumbai', '2026-09-29', 'Chartered accountant went missing after leaving office with sensitive corporate audit binders.', 43, NULL, 'Open', 'High'),
+
+('CASE-1136', 'Mobile Phone Theft', 'Delhi', '2026-10-01', 'Handset stolen from commuter jacket pocket while boarding a crowded DTC bus at central terminal.', 22, NULL, 'Open', 'Low'),
+('CASE-1137', 'Robbery', 'Chennai', '2026-10-03', 'ATM cash replenishment van attacked by armed suspects using stun guns; security guard injured.', 41, 33, 'Under Investigation', 'Critical'),
+('CASE-1138', 'Cybercrime', 'Hyderabad', '2026-10-05', 'Phishing portal mimicking government tax rebate portal harvested 300+ citizen net banking credentials.', 37, NULL, 'Open', 'High'),
+('CASE-1139', 'Burglary', 'Kochi', '2026-10-07', 'Ayurvedic wellness resort administrative office broken into; foreign currency cash and laptops stolen.', 48, NULL, 'Open', 'Medium'),
+('CASE-1140', 'Theft', 'Coimbatore', '2026-10-09', 'Heavy diesel fuel siphoned from 12 parked transport trucks at highway logistics hub.', 55, 26, 'Closed', 'Low'),
+
+('CASE-1141', 'Vandalism', 'Kolkata', '2026-10-11', 'Historical statue and public memorial plaque defaced with spray paint in botanical garden.', NULL, 21, 'Closed', 'Low'),
+('CASE-1142', 'Fraud', 'Mumbai', '2026-10-13', 'Real estate developer sold duplicate ownership allotment deeds for the same residential flats to 30 homebuyers.', 51, 54, 'Under Investigation', 'Critical'),
+('CASE-1143', 'Assault', 'Pune', '2026-10-15', 'Bouncer and patron brawl at nightclub entrance resulting in facial fractures.', 28, 31, 'Closed', 'Medium'),
+('CASE-1144', 'Drug-related offences', 'Bengaluru', '2026-10-17', 'Clandestine hydroponic cannabis grow lab discovered inside rented suburban villa basement.', 34, 29, 'Closed', 'High'),
+('CASE-1145', 'Missing Person', 'Delhi', '2026-10-19', 'Foreign exchange student missing after attending evening cultural festival in old city quarters.', 21, NULL, 'Open', 'Critical'),
+
+('CASE-1146', 'Mobile Phone Theft', 'Madurai', '2026-10-21', 'Smartphone snatched from elderly passenger boarding express bus at Mattuthavani bus stand.', 67, 20, 'Open', 'Medium'),
+('CASE-1147', 'Vehicle Theft', 'Hyderabad', '2026-10-23', 'Unmarked pharmaceutical delivery vehicle with temperature-controlled vaccines stolen outside clinic.', 36, NULL, 'Under Investigation', 'High'),
+('CASE-1148', 'Burglary', 'Chennai', '2026-10-25', 'Electronics retail showroom broken into through air conditioning duct; 40 smart watches and tablets missing.', 42, 25, 'Open', 'High'),
+('CASE-1149', 'Cybercrime', 'Pune', '2026-10-27', 'Extortion emails sent to university professors threatening release of doctored examination records.', 53, NULL, 'Under Investigation', 'Medium'),
+('CASE-1150', 'Theft', 'Mumbai', '2026-10-29', 'Luxury designer baggage stolen from airport arrival conveyor carousel while traveler cleared customs.', 32, NULL, 'Open', 'Low');
+

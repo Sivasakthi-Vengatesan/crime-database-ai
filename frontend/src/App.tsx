@@ -1,226 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { Sidebar } from './components/Sidebar';
-import { Header } from './components/Header';
-import { ChatFeed } from './components/ChatFeed';
-import { ChatInput } from './components/ChatInput';
-import { ComplaintSection } from './components/ComplaintSection';
-import { ComplaintTracker } from './components/ComplaintTracker';
-import { AnalyticsDashboard } from './components/AnalyticsDashboard';
-import { CaseLedger } from './components/CaseLedger';
-import { SosModal } from './components/SosModal';
-import { SettingsModal } from './components/SettingsModal';
-import {
-  ChatMessage,
-  ConversationSession,
-  DatabaseStats,
-  AnalyticsData,
-} from './types/chat';
-import {
-  sendChatMessage,
-  fetchSampleQueries,
-  fetchDatabaseStats,
-  fetchAnalyticsApi,
-  clearSessionApi,
-} from './api/chatApi';
+import { IconRail } from './components/IconRail';
+import { ChatColumn } from './components/ChatColumn';
+import { LivePreviewPanel } from './components/LivePreviewPanel';
+import { Evidence } from './types/chat';
+import { fetchDatabaseStats } from './api/chatApi';
 
 export const App: React.FC = () => {
-  const [activeMode, setActiveMode] = useState<string>('chat');
-  const [trackerInitialNumber, setTrackerInitialNumber] = useState<string>('');
-
-  const [sessions, setSessions] = useState<ConversationSession[]>(() => [
-    {
-      id: 'session-1',
-      title: 'Active Case Discovery',
-      lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      messages: [],
-    },
-  ]);
-
-  const [activeSessionId, setActiveSessionId] = useState<string>('session-1');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [sampleQueries, setSampleQueries] = useState<string[]>([]);
-  const [stats, setStats] = useState<DatabaseStats | null>(null);
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
-  const [isSosOpen, setIsSosOpen] = useState<boolean>(false);
-
-  const activeSession = sessions.find((s) => s.id === activeSessionId) || sessions[0];
+  const [activeTab, setActiveTab] = useState<string>('chat');
+  const [selectedEvidence, setSelectedEvidence] = useState<Evidence | null>(null);
+  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
+  const [chatInitialQuery, setChatInitialQuery] = useState<string>('');
+  const [totalRecords, setTotalRecords] = useState<number>(105);
 
   useEffect(() => {
-    fetchSampleQueries().then(setSampleQueries);
-    fetchDatabaseStats().then(setStats);
-    fetchAnalyticsApi().then(setAnalytics).catch(() => {});
+    fetchDatabaseStats().then((res) => {
+      if (res?.totalRecords) setTotalRecords(res.totalRecords);
+    });
   }, []);
 
-  const handleSendMessage = async (text: string) => {
-    const userMsg: ChatMessage = {
-      id: `msg-${Date.now()}-user`,
-      sender: 'user',
-      text,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-
-    setSessions((prev) =>
-      prev.map((s) => {
-        if (s.id === activeSessionId) {
-          const isFirstMessage = s.messages.length === 0;
-          return {
-            ...s,
-            title: isFirstMessage ? (text.length > 28 ? `${text.slice(0, 28)}…` : text) : s.title,
-            lastUpdated: userMsg.timestamp,
-            messages: [...s.messages, userMsg],
-          };
-        }
-        return s;
-      })
-    );
-
-    setIsLoading(true);
-
-    try {
-      const response = await sendChatMessage(text, activeSessionId);
-
-      const agentMsg: ChatMessage = {
-        id: `msg-${Date.now()}-agent`,
-        sender: 'agent',
-        text: response.answer,
-        evidence: response.evidence,
-        reasoning: response.reasoning,
-        terminalLog: response.terminalLog,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-
-      setSessions((prev) =>
-        prev.map((s) => (s.id === activeSessionId ? { ...s, messages: [...s.messages, agentMsg] } : s))
-      );
-
-      // Refresh database stats & analytics
-      fetchDatabaseStats().then(setStats);
-      fetchAnalyticsApi().then(setAnalytics).catch(() => {});
-    } catch (error: any) {
-      const errorMsg: ChatMessage = {
-        id: `msg-${Date.now()}-error`,
-        sender: 'agent',
-        text: error.message || 'An error occurred while communicating with the database.',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isError: true,
-      };
-
-      setSessions((prev) =>
-        prev.map((s) => (s.id === activeSessionId ? { ...s, messages: [...s.messages, errorMsg] } : s))
-      );
-    } finally {
-      setIsLoading(false);
-    }
+  const handleNewBuild = () => {
+    setActiveTab('chat');
   };
 
-  const handleNewChat = () => {
-    const newSessionId = `session-${Date.now()}`;
-    const newSession: ConversationSession = {
-      id: newSessionId,
-      title: 'New Case Inquiry',
-      lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      messages: [],
-    };
-    setSessions((prev) => [newSession, ...prev]);
-    setActiveSessionId(newSessionId);
+  const handleSelectEvidence = (ev: Evidence) => {
+    setSelectedEvidence(ev);
+    setSelectedCaseId(ev.caseId);
   };
 
-  const handleClearChat = async () => {
-    await clearSessionApi(activeSessionId);
-    setSessions((prev) =>
-      prev.map((s) => (s.id === activeSessionId ? { ...s, messages: [] } : s))
-    );
-  };
-
-  const handleInvestigateInChat = (caseId: string, promptText: string) => {
-    setActiveMode('chat');
-    handleSendMessage(promptText);
-  };
-
-  const handleViewTracker = (trackingNumber: string) => {
-    setTrackerInitialNumber(trackingNumber);
-    setActiveMode('tracker');
+  const handleInvestigateInChat = (query: string) => {
+    setActiveTab('chat');
+    setChatInitialQuery(query);
   };
 
   return (
-    <div
-      className="flex h-screen w-screen overflow-hidden"
-      style={{ background: 'var(--bg-gradient)' }}
-    >
-      {/* CrimsonLogic Sidebar */}
-      <Sidebar
-        sessions={sessions}
-        activeSessionId={activeSessionId}
-        activeMode={activeMode}
-        onSelectSession={setActiveSessionId}
-        onSelectMode={setActiveMode}
-        onNewChat={handleNewChat}
-        isOpenMobile={isMobileMenuOpen}
-        onCloseMobile={() => setIsMobileMenuOpen(false)}
-        onOpenSos={() => setIsSosOpen(true)}
-        stats={stats}
-        analytics={analytics}
+    <div className="flex h-screen w-screen bg-[#fcfdfc] text-[#131815] overflow-hidden select-none font-sans">
+      {/* Zone 1: Slim 64px Left Icon Rail */}
+      <IconRail
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        onNewBuild={handleNewBuild}
+        totalRecords={totalRecords}
       />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen min-w-0 md:pl-[288px] relative overflow-hidden">
-        {/* Header */}
-        <Header
-          title={activeSession.title}
-          activeMode={activeMode}
-          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
-          onClearChat={handleClearChat}
-          onOpenSettings={() => setIsSettingsOpen(true)}
-          onOpenSos={() => setIsSosOpen(true)}
-          totalRecords={stats?.totalRecords || 106}
-        />
+      {/* Zone 2: Fixed 452px Chat Column */}
+      <ChatColumn
+        onSelectEvidence={handleSelectEvidence}
+        onSelectCaseId={setSelectedCaseId}
+        initialQuery={chatInitialQuery}
+      />
 
-        {/* Dynamic Views */}
-        {activeMode === 'chat' && (
-          <main className="flex-1 flex flex-col relative overflow-hidden">
-            <ChatFeed
-              messages={activeSession.messages}
-              isLoading={isLoading}
-              sampleQueries={sampleQueries}
-              onSelectSampleQuery={handleSendMessage}
-            />
-            <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
-          </main>
-        )}
-
-        {activeMode === 'complaint' && (
-          <ComplaintSection
-            onInvestigateInChat={handleInvestigateInChat}
-            onViewTracker={handleViewTracker}
-          />
-        )}
-
-        {activeMode === 'tracker' && (
-          <ComplaintTracker
-            initialTrackingNumber={trackerInitialNumber}
-            onInvestigateInChat={handleInvestigateInChat}
-          />
-        )}
-
-        {activeMode === 'analytics' && (
-          <AnalyticsDashboard onInvestigateInChat={handleInvestigateInChat} />
-        )}
-
-        {activeMode === 'ledger' && (
-          <CaseLedger onInvestigateInChat={handleInvestigateInChat} />
-        )}
-      </div>
-
-      {/* Emergency SOS Modal */}
-      <SosModal isOpen={isSosOpen} onClose={() => setIsSosOpen(false)} />
-
-      {/* Settings / Architecture Modal */}
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        stats={stats}
+      {/* Zone 3: Flex Live-Preview Panel (Evidence Dossier / Database Ledger / SQL Pipeline) */}
+      <LivePreviewPanel
+        selectedEvidence={selectedEvidence}
+        selectedCaseId={selectedCaseId}
+        onInvestigateInChat={handleInvestigateInChat}
+        activeModeTab={activeTab}
       />
     </div>
   );

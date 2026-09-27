@@ -4,12 +4,12 @@ import {
   Search,
   Briefcase,
   Fingerprint,
-  Users,
-  FileText,
-  FilePlus2,
+  Database,
+  History,
   X,
-  PhoneCall,
   Plus,
+  Server,
+  Layers,
 } from 'lucide-react';
 import { ConversationSession, DatabaseStats, AnalyticsData } from '../types/chat';
 
@@ -22,9 +22,9 @@ interface SidebarProps {
   onNewChat: () => void;
   isOpenMobile: boolean;
   onCloseMobile: () => void;
-  onOpenSos: () => void;
   stats: DatabaseStats | null;
   analytics: AnalyticsData | null;
+  onSearchFocus?: (term: string) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -36,298 +36,255 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onNewChat,
   isOpenMobile,
   onCloseMobile,
-  onOpenSos,
   stats,
   analytics,
+  onSearchFocus,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const activeCount = analytics ? analytics.openCases + analytics.underInvestigationCases : 12;
-  const pendingCount = analytics ? analytics.underInvestigationCases : 48;
-  const closedCount = analytics ? analytics.closedCases : 8;
+  const totalRecords = stats?.totalRecords ?? analytics?.totalRecords ?? 106;
+  const openCases = analytics?.openCases ?? 42;
+  const underInvestigation = analytics?.underInvestigationCases ?? 31;
+  const closedCases = analytics?.closedCases ?? 54;
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim() && onSearchFocus) {
+      onSearchFocus(searchTerm.trim());
+      setSearchTerm('');
+    }
+  };
 
   return (
     <>
       {/* Mobile Backdrop */}
       {isOpenMobile && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden animate-fadeIn"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs md:hidden animate-fadeIn"
           onClick={onCloseMobile}
         />
       )}
 
       {/* CrimsonLogic Sidebar */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-[288px] bg-[#F9F9F9] border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-[280px] bg-[#F9F9F9] border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="p-6 flex flex-col h-full overflow-y-auto">
-          {/* Logo */}
-          <div className="flex items-center justify-between gap-3 mb-8">
+        <div className="p-5 flex flex-col h-full overflow-y-auto">
+          {/* Logo & Branding */}
+          <div className="flex items-center justify-between gap-3 mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#ef4444] rounded-[12px] flex items-center justify-center text-white shadow-lg relative shrink-0">
+              <div className="w-10 h-10 bg-[#ef4444] rounded-[12px] flex items-center justify-center text-white shadow-md relative shrink-0">
                 <ShieldAlert size={22} />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
                   <span className="w-1.5 h-1.5 bg-red-500 rounded-full pulse-red"></span>
                 </span>
               </div>
-              <span className="text-[var(--slate-800)] font-bold text-lg tracking-tight">
-                CrimsonLogic
-              </span>
+              <div className="flex flex-col">
+                <span className="text-slate-900 font-bold text-base tracking-tight leading-tight font-sans">
+                  CrimsonLogic
+                </span>
+                <span className="text-[11px] font-semibold text-slate-500 font-mono">
+                  AI Crime Intelligence
+                </span>
+              </div>
             </div>
 
             <button
               onClick={onCloseMobile}
               className="md:hidden p-1.5 rounded-lg hover:bg-gray-200 text-gray-500"
+              aria-label="Close sidebar"
             >
               <X size={18} />
             </button>
           </div>
 
-          {/* Search */}
-          <div className="relative mb-6">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          {/* Search Shortcut */}
+          <form onSubmit={handleSearchSubmit} className="relative mb-5">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search cases..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 text-slate-800"
+              className="w-full bg-white border border-gray-200 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-red-500/20 text-slate-800 placeholder:text-gray-400 shadow-2xs"
             />
-          </div>
+          </form>
 
-          {/* Nav */}
-          <nav className="flex-1 space-y-1">
-            {/* Case Search */}
-            <div className="relative group has-tooltip">
-              <a
-                id="nav-case-search"
-                href="#case-search"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSelectMode('chat');
-                  if (isOpenMobile) onCloseMobile();
-                }}
-                className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                  activeMode === 'chat'
-                    ? 'bg-red-500 text-white font-bold shadow-md shadow-red-500/20'
-                    : 'text-[var(--slate-800)] hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Briefcase size={18} />
-                  <span>Case Search</span>
-                </div>
-                {activeMode !== 'chat' && (
-                  <span className="w-2 h-2 bg-red-500 rounded-full pulse-red"></span>
-                )}
-              </a>
-              <div className="tooltip absolute left-full ml-4 top-1/2 -translate-y-1/2 dark-glass px-4 py-3 rounded-2xl w-48 shadow-2xl z-[60] pointer-events-none">
-                <p className="text-white text-xs font-bold mb-1">Case Discovery</p>
-                <p className="text-gray-300 text-[10px] leading-relaxed">
-                  Access global investigation records with semantic RAG lookup.
-                </p>
+          {/* Navigation */}
+          <nav className="space-y-1">
+            {/* Case Search (Main Chatbot) */}
+            <button
+              id="nav-case-search"
+              onClick={() => {
+                onSelectMode('chat');
+                if (isOpenMobile) onCloseMobile();
+              }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
+                activeMode === 'chat'
+                  ? 'bg-red-500 text-white shadow-xs shadow-red-500/20'
+                  : 'text-slate-700 hover:bg-gray-100'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Briefcase size={16} />
+                <span>Case Search</span>
               </div>
-            </div>
+              {activeMode === 'chat' && (
+                <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+              )}
+            </button>
 
-            {/* Register e-FIR */}
-            <div className="relative group has-tooltip">
-              <a
-                id="nav-complaint"
-                href="#register-efir"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSelectMode('complaint');
-                  if (isOpenMobile) onCloseMobile();
-                }}
-                className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                  activeMode === 'complaint'
-                    ? 'bg-red-500 text-white font-bold shadow-md shadow-red-500/20'
-                    : 'text-[var(--slate-800)] hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <FilePlus2 size={18} />
-                  <span>Register e-FIR</span>
-                </div>
-                <span className="text-[9px] bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded font-mono">
-                  NEW
-                </span>
-              </a>
-              <div className="tooltip absolute left-full ml-4 top-1/2 -translate-y-1/2 dark-glass px-4 py-3 rounded-2xl w-48 shadow-2xl z-[60] pointer-events-none">
-                <p className="text-white text-xs font-bold mb-1">Citizen & Officer Intake</p>
-                <p className="text-gray-300 text-[10px] leading-relaxed">
-                  Submit incident reports with live AI threat assessment and vector indexing.
-                </p>
+            {/* Evidence Analysis */}
+            <button
+              id="nav-evidence-analysis"
+              onClick={() => {
+                onSelectMode('chat');
+                if (isOpenMobile) onCloseMobile();
+              }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
+                activeMode === 'evidence'
+                  ? 'bg-red-500 text-white shadow-xs shadow-red-500/20'
+                  : 'text-slate-700 hover:bg-gray-100'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Fingerprint size={16} />
+                <span>Evidence Analysis</span>
               </div>
-            </div>
+            </button>
 
-            {/* Evidence Analysis / Case Tracker */}
-            <div className="relative group has-tooltip">
-              <a
-                id="nav-evidence"
-                href="#evidence-analysis"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSelectMode('tracker');
-                  if (isOpenMobile) onCloseMobile();
-                }}
-                className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                  activeMode === 'tracker'
-                    ? 'bg-red-500 text-white font-bold shadow-md shadow-red-500/20'
-                    : 'text-[var(--slate-800)] hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Fingerprint size={18} />
-                  <span>Evidence Analysis</span>
-                </div>
-              </a>
-              <div className="tooltip absolute left-full ml-4 top-1/2 -translate-y-1/2 dark-glass px-4 py-3 rounded-2xl w-48 shadow-2xl z-[60] pointer-events-none">
-                <p className="text-white text-xs font-bold mb-1">Investigation Timeline</p>
-                <p className="text-gray-300 text-[10px] leading-relaxed">
-                  Track 5-stage case forensics, evidence milestones, and station assignments.
-                </p>
+            {/* Crime Records (Database Ledger) */}
+            <button
+              id="nav-crime-records"
+              onClick={() => {
+                onSelectMode('ledger');
+                if (isOpenMobile) onCloseMobile();
+              }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
+                activeMode === 'ledger'
+                  ? 'bg-red-500 text-white shadow-xs shadow-red-500/20'
+                  : 'text-slate-700 hover:bg-gray-100'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Database size={16} />
+                <span>Crime Records</span>
               </div>
-            </div>
-
-            {/* Suspect Database / Radar */}
-            <div className="relative group has-tooltip">
-              <a
-                id="nav-suspects"
-                href="#suspect-database"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSelectMode('analytics');
-                  if (isOpenMobile) onCloseMobile();
-                }}
-                className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                  activeMode === 'analytics'
-                    ? 'bg-red-500 text-white font-bold shadow-md shadow-red-500/20'
-                    : 'text-[var(--slate-800)] hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Users size={18} />
-                  <span>Suspect Database</span>
-                </div>
-              </a>
-              <div className="tooltip absolute left-full ml-4 top-1/2 -translate-y-1/2 dark-glass px-4 py-3 rounded-2xl w-48 shadow-2xl z-[60] pointer-events-none">
-                <p className="text-white text-xs font-bold mb-1">Target Profiling</p>
-                <p className="text-gray-300 text-[10px] leading-relaxed">
-                  Cross-reference city hotspot patterns with active warrant registries.
-                </p>
-              </div>
-            </div>
-
-            {/* Reports */}
-            <div className="relative group has-tooltip">
-              <a
-                id="nav-reports"
-                href="#reports"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSelectMode('ledger');
-                  if (isOpenMobile) onCloseMobile();
-                }}
-                className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                  activeMode === 'ledger'
-                    ? 'bg-red-500 text-white font-bold shadow-md shadow-red-500/20'
-                    : 'text-[var(--slate-800)] hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <FileText size={18} />
-                  <span>Reports</span>
-                </div>
-              </a>
-              <div className="tooltip absolute left-full ml-4 top-1/2 -translate-y-1/2 dark-glass px-4 py-3 rounded-2xl w-48 shadow-2xl z-[60] pointer-events-none">
-                <p className="text-white text-xs font-bold mb-1">Database Repository</p>
-                <p className="text-gray-300 text-[10px] leading-relaxed">
-                  Browse and export verified records from the PostgreSQL database.
-                </p>
-              </div>
-            </div>
-
-            {/* Live Case Updates Section */}
-            <div className="pt-8">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3">
-                Live Case Updates
+              <span className="text-[10px] font-mono text-gray-500 font-bold">
+                {totalRecords}
               </span>
-              <div className="mt-4 space-y-3 px-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+            </button>
+
+            {/* Chat History Section */}
+            <div className="pt-4">
+              <div className="flex items-center justify-between px-2 mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center gap-1">
+                  <History size={11} />
+                  Chat History
+                </span>
+                <button
+                  onClick={onNewChat}
+                  className="text-[11px] text-red-600 font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
+                  title="New chat session"
+                >
+                  <Plus size={12} /> New
+                </button>
+              </div>
+
+              <div className="space-y-1 max-h-32 overflow-y-auto">
+                {sessions.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => {
+                      onSelectSession(s.id);
+                      onSelectMode('chat');
+                      if (isOpenMobile) onCloseMobile();
+                    }}
+                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs truncate transition-colors flex items-center justify-between cursor-pointer ${
+                      activeSessionId === s.id && activeMode === 'chat'
+                        ? 'bg-red-50 text-red-700 font-semibold border border-red-200'
+                        : 'text-slate-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    <span className="truncate">{s.title || 'Inquiry Session'}</span>
+                    <span className="text-[9px] font-mono text-gray-400 shrink-0 ml-1">
+                      {s.messages.length} msgs
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Database Status Section */}
+            <div className="pt-5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2 font-mono block mb-2.5">
+                Database Status
+              </span>
+              <div className="space-y-2 px-1">
+                <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-white border border-gray-200/80 shadow-2xs">
+                  <span className="text-slate-600 font-medium">Crime Records</span>
+                  <span className="font-mono font-bold text-slate-900 bg-gray-100 px-2 py-0.5 rounded-md text-[11px]">
+                    {totalRecords}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-white border border-gray-200/80 shadow-2xs">
+                  <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                    <span className="text-[11px] font-semibold text-slate-600">Active Cases</span>
+                    <span className="text-slate-600 font-medium">Open Cases</span>
                   </div>
-                  <span className="bg-red-50 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
-                    {activeCount}
+                  <span className="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-md font-mono border border-red-200">
+                    {openCases}
                   </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+
+                <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-white border border-gray-200/80 shadow-2xs">
+                  <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>
-                    <span className="text-[11px] font-semibold text-slate-600">Pending Review</span>
+                    <span className="text-slate-600 font-medium">Under Investigation</span>
                   </div>
-                  <span className="bg-orange-50 text-orange-500 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
-                    {pendingCount}
+                  <span className="bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded-md font-mono border border-orange-200">
+                    {underInvestigation}
                   </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                    <span className="text-[11px] font-semibold text-slate-600">Closed Today</span>
+
+                <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-white border border-gray-200/80 shadow-2xs">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                    <span className="text-slate-600 font-medium">Closed Cases</span>
                   </div>
-                  <span className="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
-                    {closedCount < 10 ? `0${closedCount}` : closedCount}
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-md font-mono border border-emerald-200">
+                    {closedCases}
                   </span>
                 </div>
               </div>
             </div>
           </nav>
 
-          {/* Emergency SOS Bar */}
-          <div className="my-4">
-            <button
-              onClick={onOpenSos}
-              className="w-full py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs font-bold flex items-center justify-between transition-all"
-            >
-              <div className="flex items-center gap-2">
-                <PhoneCall size={14} className="text-red-500 animate-pulse" />
-                <span>Emergency SOS (112)</span>
-              </div>
-              <span className="text-[9px] bg-red-500 text-white font-mono px-1.5 py-0.5 rounded font-bold">
-                24/7
-              </span>
-            </button>
-          </div>
-
-          {/* Upgrade Card */}
-          <div className="mt-auto">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-red-50 to-orange-50 border border-red-100 relative overflow-hidden">
-              <div className="flex justify-between items-start mb-2">
-                <span className="bg-red-500 text-[10px] font-bold text-white px-2 py-0.5 rounded-full uppercase tracking-widest font-mono">
-                  Pro
-                </span>
-                <span className="text-[10px] font-mono text-slate-500">
-                  {stats?.totalRecords || 106} cases
+          {/* Bottom Card: New Investigation Action & Architecture badge */}
+          <div className="mt-auto pt-4">
+            <div className="p-3.5 rounded-2xl bg-white border border-gray-200 shadow-2xs">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono flex items-center gap-1">
+                  <Server size={11} className="text-red-500" />
+                  LangChain4j + pgvector
                 </span>
               </div>
-              <p className="text-xs font-semibold text-[var(--slate-800)] mb-1">Unlock Advanced RAG</p>
-              <p className="text-[10px] text-gray-500 mb-3 leading-relaxed">
-                Deep cross-referencing for cold cases and complex patterns with pgvector.
+              <p className="text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Natural-language conversational retrieval grounded in PostgreSQL.
               </p>
               <button
-                id="upgrade-btn"
+                id="btn-new-investigation"
                 onClick={() => {
                   onSelectMode('chat');
                   onNewChat();
                   if (isOpenMobile) onCloseMobile();
                 }}
-                className="w-full bg-white text-red-500 text-[12px] font-bold py-2 rounded-lg border border-red-200 hover:bg-red-500 hover:text-white transition-all shadow-xs flex items-center justify-center gap-1.5"
+                className="w-full bg-slate-900 text-white text-xs font-bold py-2 rounded-xl hover:bg-red-500 transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Plus size={13} />
+                <Plus size={14} />
                 New Investigation
               </button>
             </div>
@@ -337,3 +294,4 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </>
   );
 };
+

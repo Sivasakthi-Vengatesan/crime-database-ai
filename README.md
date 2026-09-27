@@ -1,73 +1,79 @@
-# Intelligent Conversational AI for Crime Database
+# CrimsonLogic — Intelligent Conversational AI for Crime Database
 
-An enterprise-grade, evidence-grounded conversational AI assistant designed for querying criminal records using natural language. Built with a robust **Java 17 Spring Boot** backend leveraging **LangChain4j**, **Spring Data JPA**, and **PostgreSQL with pgvector**, coupled with a **React + TypeScript + Vite** dark-mode tactical investigation interface.
+An evidence-grounded conversational AI intelligence assistant for querying synthetic crime database records using natural language. Built with a robust **Java 17 Spring Boot** backend leveraging **LangChain4j**, **Spring Data JPA**, and **PostgreSQL with pgvector**, paired with a **React + TypeScript + Vite** CrimsonLogic intelligence interface.
 
 > [!NOTE]
-> **Synthetic Demo Data**: All crime records shown are entirely fictional and generated strictly for demonstration and testing purposes.
+> **Academic & Synthetic Demo Notice**: The crime records used by this prototype are synthetic data generated solely for demonstration and academic purposes. All cases, descriptions, IDs, dates, and locations are fictional.
 
 ---
 
-## Architecture Diagram
+## 1. Project Overview
+
+CrimsonLogic is a conversational intelligence assistant that enables investigators, analysts, and academic researchers to query structured and unstructured crime database records using plain English. Users do not need to write complex SQL queries or understand schema structures. The system autonomously parses structured filters (city, crime category, date, case status, severity, age), performs dense vector similarity search using `pgvector`, and grounds LLM synthesis strictly on retrieved evidence records to prevent hallucinations.
+
+---
+
+## 2. Problem Statement & Solution
+
+### Problem Statement
+Traditional crime database interfaces require rigid SQL queries, manual multi-table joins, or keyword searches that fail when investigators describe incidents with variable vocabulary (e.g., "stolen smartphone" vs "handset snatched on a train"). Furthermore, standard generative AI systems suffer from hallucinations when queried about sensitive factual records.
+
+### Solution
+CrimsonLogic bridges natural-language queries with PostgreSQL through a **Hybrid RAG Pipeline**:
+1. **Query Entity & Filter Extraction**: Detects structured criteria (e.g., `City: Chennai`, `Year: 2026`, `Status: Open`).
+2. **Dense Semantic Retrieval**: Computes 384-dimensional cosine similarity embeddings across textual incident descriptions via `pgvector`.
+3. **Evidence-Grounded Synthesis**: LangChain4j feeds only the retrieved database records into the LLM context, ensuring all statements are verified by database evidence.
+
+---
+
+## 3. System Architecture
 
 ```mermaid
 flowchart TD
-    subgraph Client ["React TypeScript Frontend"]
-        UI["Dark Tactical Chat Interface"]
-        TB["Terminal Execution Block ($)"]
-        RB["Collapsible Agent Reasoning Block"]
-        EC["Evidence Cards"]
+    subgraph Client ["React + TypeScript Frontend (CrimsonLogic)"]
+        UI["Chat Landing & Inquiry Feed"]
+        PC["Prompt Cards (Pattern, Search, Explore)"]
+        EC["Evidence Cards (Case ID, Modus Operandi, Sim Score)"]
     end
 
     subgraph Backend ["Java 17 / Spring Boot Backend"]
         API["ChatController (/api/chat)"]
-        CS["ChatService (Session Memory Context)"]
-        QP["RetrievalService (Structured Query Extraction)"]
+        CS["ChatService (Conversational Context)"]
+        QP["RetrievalService (Query Understanding & Hybrid Filtering)"]
         ES["EmbeddingService (LangChain4j AllMiniLmL6V2)"]
-        RAG["RagService (LangChain4j LLM Grounding Engine)"]
+        RAG["RagService (Zero-Hallucination Grounding Engine)"]
     end
 
-    subgraph Storage ["Database Layer"]
-        PG[("PostgreSQL")]
-        VEC[("pgvector HNSW Index")]
+    subgraph Storage ["PostgreSQL + pgvector"]
+        PG[("PostgreSQL 16+")]
+        VEC[("pgvector HNSW Cosine Index")]
     end
 
     UI -->|"POST /api/chat"| API
     API --> CS
     CS --> QP
-    QP -->|"Extract City, Crime, Date, Status"| PG
-    QP -->|"Generate 384-dim Query Vector"| ES
-    ES -->|"Vector Cosine Ops"| VEC
-    PG & VEC -->|"Top-k Crime Records"| QP
-    QP -->|"Evidence Records + SQL Trace"| CS
+    QP -->|"Structured Filters (City, Type, Date)"| PG
+    QP -->|"384-dim Query Vector"| ES
+    ES -->|"Vector Cosine Search"| VEC
+    PG & VEC -->|"Top-k Evidence Records"| QP
+    QP -->|"Retrieved Crime Records"| CS
     CS --> RAG
-    RAG -->|"Grounded Prompt + Context"| CS
-    CS -->|"Answer + Evidence + Telemetry"| API
+    RAG -->|"Grounded Synthesis"| CS
+    CS -->|"Answer + Evidence Records"| API
     API --> UI
-    UI --> TB & RB & EC
+    UI --> EC
 ```
 
 ---
 
-## Features
-
-- **Natural Language Querying**: Users ask plain English questions without needing SQL knowledge.
-- **Hybrid Retrieval**: Extracts structured constraints (City, Crime Type, Status, Year, Age) combined with dense vector semantic search.
-- **LangChain4j RAG Pipeline**: Enforces zero hallucination by strictly conditioning answers on retrieved PostgreSQL records.
-- **pgvector Vector Search**: Dense 384-dimensional vector similarity ranking with cosine distance.
-- **Transparent Evidence Backing**: Every AI response displays matching database records with Case IDs, timestamps, severity badges, and similarity scores.
-- **Multi-turn Conversational Context**: Supports contextual follow-up questions (e.g., *"Show theft in Mumbai"* followed by *"Which of them are still open?"*).
-- **Dark AI Agent Interface**: Built to specification using layered grayscale palette (`#0f1115`, `#181b21`, `#232730`), Inter + JetBrains Mono fonts, collapsible technical blocks, and radar-pulse status indicator.
-- **Synthetic Demo Dataset**: Includes 105 realistic fictional records across 10 Indian cities.
-
----
-
-## Technology Stack
+## 4. Technology Stack
 
 ### Backend
 - **Java 17**
 - **Spring Boot 3.3.4** (Spring Web, Spring Data JPA, Spring Validation)
-- **LangChain4j 0.35.0** (OpenAI, In-process AllMiniLmL6V2 Embedding Model)
-- **PostgreSQL 16+ & pgvector** (with H2 embedded fallback for zero-setup execution)
+- **LangChain4j 0.35.0** (OpenAI LLM Integration, In-process AllMiniLmL6V2 Embeddings)
+- **PostgreSQL 16+ & pgvector** (Dense vector storage and indexing)
+- **Hibernate / JPA**
 - **Maven** (with `mvnw` wrapper included)
 - **JUnit 5 & Mockito**
 
@@ -76,11 +82,33 @@ flowchart TD
 - **TypeScript**
 - **Vite 5**
 - **Lucide React Icons**
-- **Vanilla CSS / Custom Design Tokens**
+- **Vanilla CSS / Custom Crimson Design System**
 
 ---
 
-## Database Schema
+## 5. RAG Pipeline
+
+```
+User Query
+    ↓
+Query Understanding (City, Crime Type, Year, Status extraction)
+    ↓
+Embedding Generation (AllMiniLmL6V2 384-dim vector)
+    ↓
+PostgreSQL + pgvector Similarity Search
+    ↓
+Top Relevant Crime Records
+    ↓
+Context Construction & Prompt Template
+    ↓
+LangChain4j LLM Execution
+    ↓
+Structured Answer + Supporting Evidence Cards
+```
+
+---
+
+## 6. Database Schema
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
@@ -108,140 +136,118 @@ ON crime_records USING hnsw (embedding vector_cosine_ops);
 
 ---
 
-## Setup & Execution
+## 7. Synthetic Mock Dataset
 
-### 1. Prerequisites
-- **Java 17+** installed (`java -version`)
-- **Node.js 18+** & `npm` installed (`node -v`)
-- *(Optional)* PostgreSQL with pgvector extension enabled. If PostgreSQL is not running, the application automatically runs in zero-configuration mode using embedded storage!
+The application includes over 100 realistic synthetic crime records seeded across 10 major jurisdictions:
+- **Cities**: Chennai, Mumbai, Delhi, Bengaluru, Hyderabad, Kolkata, Pune, Kochi, Coimbatore, Madurai
+- **Categories**: Theft, Robbery, Burglary, Assault, Cybercrime, Fraud, Vehicle Theft, Mobile Phone Theft, Missing Person, Vandalism, Drug-related offences
+- **Semantic Variation**: Rich natural language descriptions designed to test semantic vector matching (e.g., *"handset was taken while boarding a train"*, *"smartphone disappeared from a commuter's bag"*).
 
-### 2. Environment Variables
-Copy `.env.example` to `.env` in `backend/` or configure environment variables:
+---
+
+## 8. Setup & Execution Instructions
+
+### Prerequisites
+- **Java 17+** (`java -version`)
+- **Node.js 18+** & `npm` (`node -v`)
+- **PostgreSQL with pgvector** (or embedded fallback)
+
+### Environment Variables
+Configure `.env` in `backend/` or set system environment variables:
 ```bash
-# PostgreSQL Database (Optional - falls back to in-memory mode if omitted)
 DATABASE_URL=jdbc:postgresql://localhost:5432/crime_database
 DATABASE_USERNAME=postgres
 DATABASE_PASSWORD=postgres
-
-# LangChain4j LLM API Key (Optional - uses local grounded synthesis engine if omitted)
 LLM_API_KEY=your_openai_api_key_here
 LLM_MODEL_NAME=gpt-4o-mini
 PORT=8080
 ```
 
-### 3. Running the Backend (Spring Boot)
-Navigate to the `backend/` folder and start the application:
-
-**Windows**:
+### Running Backend (Spring Boot)
 ```cmd
 cd backend
 mvnw.cmd spring-boot:run
 ```
+*(On Linux/macOS: `./mvnw spring-boot:run`)*
 
-**Linux / macOS**:
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-
-The backend starts at `http://localhost:8080` and automatically populates the 105 synthetic crime records and indexes their vector embeddings.
-
-### 4. Running the Frontend (React + Vite)
-In a separate terminal, navigate to `frontend/`:
-```bash
+### Running Frontend (React + Vite)
+```cmd
 cd frontend
 npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` in your web browser.
+Visit **http://localhost:5173** in your browser.
 
 ---
 
-## Example Test Queries
+## 9. Example Test Queries
 
-The application comes pre-loaded with mock data to test these natural language scenarios:
-
-1. **Structured City + Crime Type Search**:
-   > *"Show theft cases in Chennai."*
-2. **Cybercrime & Fraud**:
-   > *"Find cybercrime cases in Bengaluru."*
-3. **Unresolved / Status Queries**:
-   > *"Show unresolved cases in Mumbai."*
-4. **Demographic Queries**:
-   > *"Find mobile phone theft cases involving young victims."*
-5. **Year Filtering**:
-   > *"Show robbery cases reported during 2026."*
-6. **Pure Semantic Search** (matching concepts without exact keywords):
-   > *"Find cases similar to a mobile phone being stolen from a railway passenger."*
-7. **Conversational Context Follow-up**:
-   - Turn 1: *"Show theft cases in Mumbai."*
-   - Turn 2: *"Which of them are still open?"*
+1. *"Show theft cases in Chennai."*
+2. *"Find robbery cases in Mumbai."*
+3. *"Show unresolved cases in Bengaluru."*
+4. *"Find cybercrime cases during 2026."*
+5. *"Show high severity cases in Delhi."*
+6. *"Find mobile phone theft cases involving victims below 25."*
+7. *"Show cases similar to a phone stolen from a railway passenger."*
+8. *"Which cases are still under investigation?"*
 
 ---
 
-## REST API Specification
+## 10. API Specification
 
 ### `POST /api/chat`
 **Request**:
 ```json
 {
-  "message": "Show theft cases in Mumbai",
-  "sessionId": "session-123"
+  "message": "Show theft cases in Chennai",
+  "sessionId": "session-101"
 }
 ```
 
 **Response**:
 ```json
 {
-  "answer": "I found 4 theft cases in Mumbai matching your query. The verified case records are displayed as evidence below.",
+  "answer": "I found 5 theft cases in Chennai.",
   "evidence": [
     {
-      "caseId": "CASE-1005",
-      "crimeType": "Theft",
-      "location": "Mumbai",
-      "date": "2026-06-12",
+      "caseId": "CASE-1001",
+      "crimeType": "Mobile Phone Theft",
+      "location": "Chennai",
+      "date": "2026-05-14",
       "status": "Open",
-      "severity": "Low",
-      "description": "A backpack containing a work laptop, wallet, and personal documents was taken from an office lobby.",
-      "victimAge": 29,
-      "suspectAge": null,
-      "similarityScore": 0.842
+      "severity": "Medium",
+      "description": "A mobile phone was reported stolen from a commuter while travelling through a crowded railway station.",
+      "similarityScore": 0.892
     }
   ],
-  "reasoning": [
-    {
-      "stepName": "Query Analysis & Filter Extraction",
-      "description": "Parsed natural language query for entity constraints and intent.",
-      "details": "Location: Mumbai | CrimeType: Theft | Status: ANY"
-    }
-  ],
-  "terminalLog": "$ [SQL-PLAN] SELECT * FROM crime_records WHERE location = 'Mumbai' AND crime_type ILIKE '%Theft%';\n$ [RESULT] SUCCESS: Top 4 evidence records assembled in 14ms.",
-  "totalFound": 4,
-  "sessionId": "session-123"
+  "totalFound": 5,
+  "sessionId": "session-101"
 }
 ```
 
 ---
 
-## Automated Tests
+## 11. Automated Testing
 
-Run backend unit and integration test suite:
+Run the test suite using Maven:
 ```cmd
 cd backend
 mvnw.cmd test
 ```
 
-Tests include:
-- `ChatControllerTest`: WebMvc endpoint validation and error handling.
-- `RetrievalServiceTest`: Semantic ranking and entity parsing.
-- `ChatServiceTest`: Conversational context management.
-- `CrimeRecordRepositoryTest`: Data JPA query assertions.
+Tests cover:
+- `ChatControllerTest`: HTTP endpoint contracts and validation.
+- `RetrievalServiceTest`: Query decomposition and semantic vector ranking.
+- `ChatServiceTest`: Conversational context and grounding.
+- `CrimeRecordRepositoryTest`: JPA and vector query assertions.
 
 ---
 
-## Limitations & Future Scope
+## 12. Limitations & Future Scope
 
-- **Real-time Geofencing**: Current spatial search matches cities; future versions could integrate PostGIS bounding box distance calculations.
-- **Multi-modal Evidence**: Support attaching audio/video evidence links and forensic report summaries.
-- **Role-based Access Control (RBAC)**: Secure multi-department access levels for law enforcement agencies.
+- **Spatial Coordinate Mapping**: Extend city-level matching with PostGIS polygon boundary queries.
+- **Multimodal Records**: Ingest forensic report attachments and CCTV timestamps.
+- **Advanced Query Federation**: Multi-jurisdiction cross-database routing.
+
+> **Disclaimer**: CrimsonLogic is an academic PBL prototype. All records in this application are synthetic demonstration data and do not represent real people or real crime cases.
