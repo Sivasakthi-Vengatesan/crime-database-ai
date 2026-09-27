@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Feather, Search, Sparkles, Database, ArrowRight } from 'lucide-react';
+import { Shield, Sparkles, Database, ArrowRight, Compass } from 'lucide-react';
 import { ChatMessage } from '../types/chat';
 import { MessageItem } from './MessageItem';
 
@@ -25,175 +25,64 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
   const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
-    <div
-      style={{
-        flex: 1,
-        overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <div
-        style={{
-          maxWidth: '760px',
-          width: '100%',
-          margin: '0 auto',
-          padding: '20px 24px 32px 24px',
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-        }}
-      >
-        {/* Date Separator: Centered 'TODAY · 2:14 PM' flanked by hairlines */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '14px',
-            margin: '8px 0 24px 0',
-          }}
-        >
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E7DCCC' }} />
-          <span
-            style={{
-              fontSize: '11px',
-              fontWeight: 600,
-              letterSpacing: '0.8px',
-              color: '#9E9484',
-              textTransform: 'uppercase',
-            }}
-          >
-            TODAY · {currentTime}
+    <div className="flex-1 overflow-y-auto flex flex-col">
+      <div className="max-w-4xl w-full mx-auto px-4 md:px-6 py-6 flex flex-col flex-1">
+        {/* Date / Security Telemetry Separator */}
+        <div className="flex items-center justify-center gap-4 my-3 text-[11px] font-mono uppercase text-slate-500">
+          <div className="flex-1 h-[1px] bg-white/10" />
+          <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-white/5">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+            ACTIVE SESSION // {currentTime}
           </span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E7DCCC' }} />
+          <div className="flex-1 h-[1px] bg-white/10" />
         </div>
 
         {/* Empty State / Welcome Screen */}
         {messages.length === 0 ? (
-          <div
-            style={{
-              margin: 'auto 0',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              textAlign: 'left',
-              gap: '24px',
-              padding: '20px 0',
-            }}
-          >
+          <div className="my-auto flex flex-col items-start gap-6 py-8">
             {/* Top Brand Mark */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(196, 85, 47, 0.12)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#C4552F',
-                }}
-              >
-                <Feather size={22} strokeWidth={2.2} />
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-0.5 shadow-xl shadow-cyan-500/20">
+                <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-cyan-400">
+                  <Shield size={24} />
+                </div>
               </div>
 
               <div>
-                <h1
-                  className="font-serif"
-                  style={{
-                    fontSize: '28px',
-                    fontWeight: 600,
-                    color: '#1A1A1A',
-                    letterSpacing: '-0.5px',
-                    margin: 0,
-                  }}
-                >
-                  Ask Terra
+                <h1 className="text-2xl md:text-3xl font-bold font-display text-white tracking-tight">
+                  AEGIS Crime Intelligence AI
                 </h1>
-                <p
-                  className="font-serif"
-                  style={{
-                    fontSize: '15px',
-                    fontStyle: 'italic',
-                    color: '#736B5E',
-                    margin: '2px 0 0 0',
-                  }}
-                >
-                  Intelligent conversational assistant for crime records and forensic intelligence.
+                <p className="text-xs md:text-sm text-cyan-400 font-mono">
+                  PostgreSQL Structured Filtering + 384-Dim pgvector Dense Semantic Search
                 </p>
               </div>
             </div>
 
-            {/* Intro Editorial Text */}
-            <p
-              style={{
-                fontSize: '15px',
-                color: '#2E2822',
-                lineHeight: '1.7',
-                maxWidth: '680px',
-              }}
-            >
-              Terra grounds every response in the PostgreSQL crime database. You can search by specific cities,
-              crime categories, dates, or search naturally with descriptive phrasing like <em style={{ color: '#A8421F' }}>"mobile phone stolen near a railway station"</em>.
+            {/* Intro Text */}
+            <p className="text-sm md:text-base text-slate-300 leading-relaxed max-w-2xl font-sans">
+              Welcome to the law enforcement intelligence chatbot. Ask questions about crime patterns,
+              suspect modus operandi, city hotspot distributions, or specific FIRs in plain English.
             </p>
 
-            {/* Sample Inquiry Pills */}
-            <div style={{ width: '100%', marginTop: '8px' }}>
-              <div
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.8px',
-                  color: '#9E9484',
-                  marginBottom: '12px',
-                }}
-              >
-                Suggested Inquiries
+            {/* Suggested Starter Queries */}
+            <div className="w-full space-y-3 pt-2">
+              <div className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-2">
+                <Compass size={14} className="text-cyan-400" />
+                Recommended Investigation Queries
               </div>
 
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                  gap: '10px',
-                }}
-              >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {sampleQueries.map((query, index) => (
                   <button
                     key={index}
                     onClick={() => onSelectSampleQuery(query)}
-                    style={{
-                      backgroundColor: '#F4ECE1',
-                      border: '1px solid #E7DCCC',
-                      borderRadius: '10px',
-                      padding: '12px 16px',
-                      color: '#1A1A1A',
-                      fontSize: '13.5px',
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: '10px',
-                      transition: 'all 200ms ease',
-                      boxShadow: '0 1px 3px rgba(168, 66, 31, 0.03)',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#F0E3D5';
-                      e.currentTarget.style.borderColor = '#EAD6C4';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#F4ECE1';
-                      e.currentTarget.style.borderColor = '#E7DCCC';
-                    }}
+                    className="p-3.5 rounded-xl bg-slate-900/80 hover:bg-slate-800/90 border border-white/10 hover:border-cyan-500/40 text-left text-xs sm:text-sm text-slate-200 transition-all flex items-center justify-between gap-3 group shadow-sm hover:shadow-[0_0_15px_rgba(6,182,212,0.15)]"
                   >
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {query}
-                    </span>
-                    <ArrowRight size={14} color="#C4552F" style={{ flexShrink: 0 }} />
+                    <span className="truncate group-hover:text-white font-medium">{query}</span>
+                    <ArrowRight
+                      size={14}
+                      className="text-cyan-400 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0"
+                    />
                   </button>
                 ))}
               </div>
@@ -201,96 +90,23 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
           </div>
         ) : (
           /* Message Thread */
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="flex flex-col">
             {messages.map((message) => (
               <MessageItem key={message.id} message={message} />
             ))}
 
-            {/* Terracotta Typing Indicator (Three small terracotta dots bouncing in sequence) */}
+            {/* Typing / Retrieval Indicator */}
             {isLoading && (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '20px 0 12px 0',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <div
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '6px',
-                      backgroundColor: 'rgba(196, 85, 47, 0.12)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#C4552F',
-                    }}
-                  >
-                    <Feather size={14} strokeWidth={2.4} />
-                  </div>
-                  <span
-                    className="font-serif"
-                    style={{
-                      fontSize: '15px',
-                      fontStyle: 'italic',
-                      fontWeight: 600,
-                      color: '#1A1A1A',
-                    }}
-                  >
-                    Terra
-                  </span>
-                </div>
-
-                {/* 3 Bouncing Terracotta Dots */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '8px 4px',
-                  }}
-                >
-                  <span
-                    className="dot-bounce-1"
-                    style={{
-                      width: '7px',
-                      height: '7px',
-                      borderRadius: '50%',
-                      backgroundColor: '#C4552F',
-                      display: 'inline-block',
-                    }}
-                  />
-                  <span
-                    className="dot-bounce-2"
-                    style={{
-                      width: '7px',
-                      height: '7px',
-                      borderRadius: '50%',
-                      backgroundColor: '#C4552F',
-                      display: 'inline-block',
-                    }}
-                  />
-                  <span
-                    className="dot-bounce-3"
-                    style={{
-                      width: '7px',
-                      height: '7px',
-                      borderRadius: '50%',
-                      backgroundColor: '#C4552F',
-                      display: 'inline-block',
-                    }}
-                  />
-                  <span style={{ fontSize: '13px', color: '#736B5E', marginLeft: '6px' }}>
-                    Consulting database records…
-                  </span>
-                </div>
+              <div className="flex items-center gap-3 py-4 text-xs font-mono text-cyan-400 animate-pulse">
+                <div className="w-2 h-2 rounded-full bg-cyan-400 dot-bounce-1" />
+                <div className="w-2 h-2 rounded-full bg-cyan-400 dot-bounce-2" />
+                <div className="w-2 h-2 rounded-full bg-cyan-400 dot-bounce-3" />
+                <span>Executing pgvector semantic ranking & generating grounded analysis...</span>
               </div>
             )}
           </div>
         )}
-        <div ref={bottomRef} style={{ height: '8px' }} />
+        <div ref={bottomRef} className="h-4" />
       </div>
     </div>
   );

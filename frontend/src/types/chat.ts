@@ -53,3 +53,65 @@ export interface DatabaseStats {
   isSyntheticData: boolean;
   disclaimer: string;
 }
+
+export interface ComplaintFormData {
+  complainantName: string;
+  contactPhone: string;
+  contactEmail: string;
+  crimeType: string;
+  location: string;
+  incidentDate: string;
+  description: string;
+  victimAge?: number | '';
+  suspectAge?: number | '';
+  suspectDetails?: string;
+  severity: string;
+  landmark?: string;
+}
+
+export interface ComplaintResponseData {
+  trackingNumber: string;
+  caseId: string;
+  status: string;
+  severity: string;
+  crimeType: string;
+  location: string;
+  incidentDate: string;
+  complainantName: string;
+  aiTriageSummary: string;
+  recommendedPenalCode: string;
+  assignedPoliceStation: string;
+  createdAt: string;
+  message: string;
+  investigationMilestones?: string[];
+}
+
+export interface CrimeRecordItem {
+  id: number;
+  caseId: string;
+  crimeType: string;
+  location: string;
+  incidentDate: string;
+  description: string;
+  status: string;
+  severity: string;
+  victimAge?: number | null;
+  suspectAge?: number | null;
+}
+
+export interface AnalyticsData {
+  totalRecords: number;
+  solvedRate: number;
+  openCases: number;
+  underInvestigationCases: number;
+  closedCases: number;
+  severityCounts: {
+    Critical: number;
+    High: number;
+    Medium: number;
+    Low: number;
+  };
+  cityDistribution: Record<string, number>;
+  typeDistribution: Record<string, number>;
+  recentHotspots: CrimeRecordItem[];
+}

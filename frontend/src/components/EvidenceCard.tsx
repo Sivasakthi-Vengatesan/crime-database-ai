@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, MapPin, Shield, CheckCircle2, User } from 'lucide-react';
+import { Calendar, MapPin, Shield, User, Sparkles } from 'lucide-react';
 import { Evidence } from '../types/chat';
 
 interface EvidenceCardProps {
@@ -11,83 +11,38 @@ export const EvidenceCard: React.FC<EvidenceCardProps> = ({ evidence, index }) =
   const getSeverityBadge = (severity: string) => {
     switch (severity?.toLowerCase()) {
       case 'critical':
-        return { bg: 'rgba(196, 85, 47, 0.15)', text: '#A8421F', border: 'rgba(196, 85, 47, 0.4)' };
+        return { bg: 'rgba(244, 63, 94, 0.15)', text: '#f43f5e', border: 'rgba(244, 63, 94, 0.3)' };
       case 'high':
-        return { bg: 'rgba(217, 131, 74, 0.15)', text: '#C4552F', border: 'rgba(217, 131, 74, 0.35)' };
+        return { bg: 'rgba(245, 158, 11, 0.15)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.3)' };
       case 'medium':
-        return { bg: '#F4ECE1', text: '#736B5E', border: '#E7DCCC' };
+        return { bg: 'rgba(59, 130, 246, 0.15)', text: '#3b82f6', border: 'rgba(59, 130, 246, 0.3)' };
       default:
-        return { bg: '#F4ECE1', text: '#9E9484', border: '#E7DCCC' };
+        return { bg: 'rgba(100, 116, 139, 0.15)', text: '#94a3b8', border: 'rgba(100, 116, 139, 0.3)' };
     }
   };
 
   const badge = getSeverityBadge(evidence.severity);
 
   return (
-    <div
-      style={{
-        backgroundColor: '#FAF6F0',
-        borderRadius: '10px',
-        border: '1px solid #EAD6C4',
-        padding: '14px 16px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-        boxShadow: '0 1px 3px rgba(168, 66, 31, 0.04)',
-        transition: 'all 200ms ease',
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#C4552F')}
-      onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#EAD6C4')}
-    >
-      {/* Top Header: Serif Numeral + Case ID + Badges */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {/* Serif-terracotta numeral */}
-          <span
-            className="font-serif"
-            style={{
-              color: '#C4552F',
-              fontSize: '16px',
-              fontWeight: 700,
-              minWidth: '18px',
-            }}
-          >
+    <div className="p-4 rounded-xl bg-slate-900/80 border border-white/10 hover:border-cyan-500/40 transition-all space-y-3 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+      {/* Top Header */}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-cyan-400 font-bold text-sm min-w-[18px]">
             {index + 1}.
           </span>
-
-          <span
-            className="font-mono"
-            style={{
-              fontSize: '13px',
-              fontWeight: 600,
-              color: '#1A1A1A',
-              backgroundColor: '#F0E3D5',
-              padding: '2px 8px',
-              borderRadius: '6px',
-              border: '1px solid #EAD6C4',
-            }}
-          >
+          <span className="font-mono font-bold text-xs text-white bg-slate-800 px-2 py-0.5 rounded border border-white/10">
             {evidence.caseId}
           </span>
-
-          <span
-            style={{
-              fontSize: '12.5px',
-              fontWeight: 500,
-              color: '#736B5E',
-            }}
-          >
+          <span className="text-xs font-semibold text-slate-200">
             {evidence.crimeType}
           </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="flex items-center gap-1.5">
           <span
+            className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full uppercase"
             style={{
-              fontSize: '11px',
-              fontWeight: 600,
-              padding: '2px 8px',
-              borderRadius: '9999px',
               backgroundColor: badge.bg,
               color: badge.text,
               border: `1px solid ${badge.border}`,
@@ -96,80 +51,45 @@ export const EvidenceCard: React.FC<EvidenceCardProps> = ({ evidence, index }) =
             {evidence.severity}
           </span>
 
-          <span
-            style={{
-              fontSize: '11px',
-              fontWeight: 500,
-              padding: '2px 8px',
-              borderRadius: '9999px',
-              backgroundColor: '#F4ECE1',
-              color: '#736B5E',
-              border: '1px solid #E7DCCC',
-            }}
-          >
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/5">
             {evidence.status}
           </span>
         </div>
       </div>
 
       {/* Description */}
-      <p
-        style={{
-          fontSize: '13.5px',
-          color: '#2E2822',
-          lineHeight: '1.6',
-          margin: 0,
-        }}
-      >
+      <p className="text-xs text-slate-300 leading-relaxed">
         {evidence.description}
       </p>
 
       {/* Footer Meta Row */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '8px',
-          paddingTop: '8px',
-          borderTop: '1px solid #F0E3D5',
-          fontSize: '11.5px',
-          color: '#736B5E',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <MapPin size={12} color="#C4552F" />
+      <div className="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-white/5 text-[11px] text-slate-400">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1 text-slate-300">
+            <MapPin size={12} className="text-cyan-400" />
             <span>{evidence.location}</span>
           </span>
 
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Calendar size={12} color="#736B5E" />
+          <span className="flex items-center gap-1">
+            <Calendar size={12} className="text-slate-500" />
             <span>{evidence.date}</span>
           </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="flex items-center gap-3">
           {evidence.victimAge && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <User size={12} color="#736B5E" />
+            <span className="flex items-center gap-1">
+              <User size={12} className="text-slate-500" />
               <span>Victim: {evidence.victimAge}y</span>
             </span>
           )}
 
           {evidence.similarityScore !== undefined && evidence.similarityScore !== null && (
             <span
-              className="font-mono"
-              style={{
-                color: '#A8421F',
-                backgroundColor: '#F0E3D5',
-                padding: '1px 6px',
-                borderRadius: '4px',
-                fontSize: '11px',
-              }}
-              title="Vector Cosine Similarity Score"
+              className="font-mono text-[10px] px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-500/30 flex items-center gap-1"
+              title="Cosine Similarity"
             >
+              <Sparkles size={10} className="text-cyan-400" />
               sim: {evidence.similarityScore}
             </span>
           )}

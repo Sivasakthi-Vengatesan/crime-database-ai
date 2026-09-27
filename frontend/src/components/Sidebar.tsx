@@ -1,381 +1,268 @@
 import React, { useState } from 'react';
-import { Feather, Plus, Search, MessageSquare, Settings, X, Shield, Clock } from 'lucide-react';
+import {
+  MessageSquare,
+  Plus,
+  Search,
+  Shield,
+  FilePlus2,
+  Clock,
+  BarChart3,
+  Database,
+  PhoneCall,
+  Sparkles,
+  ChevronRight,
+  X,
+  Radio,
+} from 'lucide-react';
 import { ConversationSession, DatabaseStats } from '../types/chat';
 
 interface SidebarProps {
   sessions: ConversationSession[];
   activeSessionId: string;
+  activeMode: string;
   onSelectSession: (id: string) => void;
+  onSelectMode: (mode: string) => void;
   onNewChat: () => void;
   isOpenMobile: boolean;
   onCloseMobile: () => void;
+  onOpenSos: () => void;
   stats: DatabaseStats | null;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   sessions,
   activeSessionId,
+  activeMode,
   onSelectSession,
+  onSelectMode,
   onNewChat,
   isOpenMobile,
   onCloseMobile,
+  onOpenSos,
   stats,
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchFilter, setSearchFilter] = useState('');
 
-  const filteredSessions = sessions.filter(s =>
-    s.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSessions = sessions.filter((s) =>
+    s.title.toLowerCase().includes(searchFilter.toLowerCase())
   );
+
+  const NAV_ITEMS = [
+    {
+      id: 'chat',
+      label: 'AI Crime Analyst',
+      icon: MessageSquare,
+      badge: 'LLM RAG',
+      color: '#3b82f6',
+    },
+    {
+      id: 'complaint',
+      label: 'Register e-FIR / Complaint',
+      icon: FilePlus2,
+      badge: 'NEW',
+      color: '#06b6d4',
+    },
+    {
+      id: 'tracker',
+      label: 'Track Case Status',
+      icon: Clock,
+      badge: 'LIVE',
+      color: '#6366f1',
+    },
+    {
+      id: 'analytics',
+      label: 'Crime Threat Radar',
+      icon: BarChart3,
+      badge: 'METRICS',
+      color: '#f59e0b',
+    },
+    {
+      id: 'ledger',
+      label: 'Case Records Ledger',
+      icon: Database,
+      badge: '105+',
+      color: '#10b981',
+    },
+  ];
 
   return (
     <>
-      {/* Mobile backdrop */}
+      {/* Mobile Backdrop */}
       {isOpenMobile && (
         <div
+          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden animate-in fade-in"
           onClick={onCloseMobile}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(26, 26, 26, 0.4)',
-            zIndex: 40,
-            backdropFilter: 'blur(3px)',
-          }}
-          className="md:hidden"
         />
       )}
 
-      {/* 264px Left Sidebar on Paper #F4ECE1 */}
+      {/* Main Sidebar */}
       <aside
-        style={{
-          width: '264px',
-          backgroundColor: '#F4ECE1',
-          borderRight: '1px solid #E7DCCC',
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100vh',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          zIndex: 50,
-          transition: 'transform 300ms ease-in-out',
-        }}
-        className={`transform ${isOpenMobile ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#090d16] border-r border-white/10 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${
+          isOpenMobile ? 'translate-x-0' : '-translate-x-full'
+        }`}
       >
-        {/* Top Branding: Terracotta feather + Serif 'Terra' wordmark */}
-        <div
-          style={{
-            padding: '20px 18px 16px 18px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* Terracotta feather mark */}
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(196, 85, 47, 0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#C4552F',
-              }}
-            >
-              <Feather size={18} strokeWidth={2.2} />
+        {/* Brand Header */}
+        <div className="p-4 border-b border-white/10 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-0.5 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <div className="w-full h-full bg-[#090d16] rounded-[10px] flex items-center justify-center text-cyan-400">
+                <Shield size={20} />
+              </div>
             </div>
-
             <div>
-              <span
-                className="font-serif"
-                style={{
-                  fontSize: '20px',
-                  fontWeight: 600,
-                  color: '#1A1A1A',
-                  letterSpacing: '-0.3px',
-                }}
-              >
-                Terra
-              </span>
-              <span
-                style={{
-                  fontSize: '11px',
-                  color: '#736B5E',
-                  marginLeft: '6px',
-                  fontWeight: 500,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.6px',
-                }}
-              >
-                Crime AI
+              <div className="flex items-center gap-1.5">
+                <span className="text-base font-bold font-display text-white tracking-wide">
+                  AEGIS CRIME AI
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-cyan-400 font-semibold tracking-wider uppercase block">
+                Law Enforcement Hub
               </span>
             </div>
           </div>
 
           <button
             onClick={onCloseMobile}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#736B5E',
-              cursor: 'pointer',
-              padding: '4px',
-            }}
-            className="md:hidden"
+            className="md:hidden p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Full-width terracotta 'New conversation' button (with ⌘N hint) */}
-        <div style={{ padding: '0 16px 12px 16px' }}>
+        {/* Primary Command Navigation */}
+        <div className="p-3 border-b border-white/5 space-y-1">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-500 px-3 py-1 font-semibold">
+            Command Center
+          </div>
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeMode === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  onSelectMode(item.id);
+                  if (isOpenMobile) onCloseMobile();
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                  isActive
+                    ? 'bg-cyan-500/15 text-white border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.15)] font-semibold'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon
+                    size={16}
+                    style={{ color: isActive ? '#06b6d4' : item.color }}
+                  />
+                  <span>{item.label}</span>
+                </div>
+                <span
+                  className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                    isActive
+                      ? 'bg-cyan-400 text-black font-extrabold'
+                      : 'bg-white/5 text-slate-400'
+                  }`}
+                >
+                  {item.badge}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* AI Chat History Section */}
+        <div className="flex-1 flex flex-col min-h-0 p-3 space-y-3">
+          {/* New Chat Button */}
           <button
             onClick={() => {
+              onSelectMode('chat');
               onNewChat();
               if (isOpenMobile) onCloseMobile();
             }}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '10px 14px',
-              backgroundColor: '#C4552F',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#FFFFFF',
-              fontSize: '13.5px',
-              fontWeight: 500,
-              cursor: 'pointer',
-              boxShadow: '0 1px 3px rgba(196, 85, 47, 0.25)',
-              transition: 'background-color 200ms ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#A8421F')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#C4552F')}
-            id="btn-new-conversation"
+            className="w-full py-2.5 px-3.5 rounded-xl btn-primary text-xs font-semibold flex items-center justify-center gap-2 shadow-md shadow-blue-500/20"
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Plus size={16} strokeWidth={2.2} />
-              <span>New conversation</span>
-            </div>
-            <span
-              style={{
-                fontSize: '11px',
-                color: 'rgba(255, 255, 255, 0.75)',
-                fontFamily: 'Inter, sans-serif',
-                padding: '2px 5px',
-                borderRadius: '4px',
-                backgroundColor: 'rgba(0, 0, 0, 0.12)',
-              }}
-            >
-              ⌘N
-            </span>
+            <Plus size={15} />
+            <span>New Investigation Query</span>
           </button>
-        </div>
 
-        {/* Search Field ('Search chats') */}
-        <div style={{ padding: '0 16px 14px 16px' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: '#ECE2D5',
-              border: '1px solid #E7DCCC',
-              borderRadius: '8px',
-              padding: '7px 10px',
-            }}
-          >
-            <Search size={14} color="#736B5E" />
+          {/* Search Chats */}
+          <div className="relative">
+            <Search size={13} className="absolute left-3 top-2.5 text-slate-500" />
             <input
               type="text"
-              placeholder="Search chats"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                background: 'transparent',
-                border: 'none',
-                outline: 'none',
-                fontSize: '13px',
-                color: '#1A1A1A',
-                fontFamily: 'Inter, sans-serif',
-              }}
+              placeholder="Search past sessions..."
+              value={searchFilter}
+              onChange={(e) => setSearchFilter(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-900/60 border border-white/5 text-xs text-slate-300 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
-        </div>
 
-        {/* Middle: Scrollable History Grouped by Date Headers ('TODAY', 'YESTERDAY') */}
-        <div
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            padding: '0 12px 16px 12px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-          }}
-        >
-          {/* TODAY section */}
-          <div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.8px',
-                color: '#9E9484',
-                padding: '4px 8px 8px 8px',
-              }}
-            >
-              TODAY
+          {/* Session List */}
+          <div className="flex-1 overflow-y-auto space-y-1 pr-1">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-500 px-2 py-1 font-semibold">
+              Recent Inquiries
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-              {filteredSessions.map((session) => {
-                const isActive = session.id === activeSessionId;
-                return (
-                  <button
-                    key={session.id}
-                    onClick={() => {
-                      onSelectSession(session.id);
-                      if (isOpenMobile) onCloseMobile();
-                    }}
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '9px',
-                      padding: '9px 12px',
-                      borderRadius: '8px',
-                      border: isActive ? '1px solid #EAD6C4' : '1px solid transparent',
-                      backgroundColor: isActive ? '#F0E3D5' : 'transparent', // Soft-terracotta #F0E3D5 active pill
-                      color: isActive ? '#1A1A1A' : '#736B5E',
-                      fontSize: '13px',
-                      fontWeight: isActive ? 600 : 400,
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                      transition: 'all 200ms ease',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.backgroundColor = '#ECE2D5';
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
-                  >
+            {filteredSessions.map((session) => {
+              const isSessionActive =
+                activeMode === 'chat' && session.id === activeSessionId;
+              return (
+                <button
+                  key={session.id}
+                  onClick={() => {
+                    onSelectMode('chat');
+                    onSelectSession(session.id);
+                    if (isOpenMobile) onCloseMobile();
+                  }}
+                  className={`w-full text-left p-2.5 rounded-xl text-xs transition-all flex items-center justify-between group ${
+                    isSessionActive
+                      ? 'bg-blue-500/15 border border-blue-500/30 text-white font-medium'
+                      : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
                     <MessageSquare
                       size={14}
-                      color={isActive ? '#C4552F' : '#9E9484'}
-                      style={{ flexShrink: 0 }}
+                      className={isSessionActive ? 'text-cyan-400' : 'text-slate-500'}
                     />
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {session.title}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* YESTERDAY sample history section */}
-          <div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.8px',
-                color: '#9E9484',
-                padding: '4px 8px 8px 8px',
-              }}
-            >
-              YESTERDAY
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '9px',
-                  padding: '8px 12px',
-                  borderRadius: '8px',
-                  color: '#9E9484',
-                  fontSize: '13px',
-                  cursor: 'default',
-                }}
-              >
-                <Clock size={14} color="#9E9484" />
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  Mumbai robbery analysis
-                </span>
-              </div>
-            </div>
+                    <span className="truncate">{session.title}</span>
+                  </div>
+                  <ChevronRight
+                    size={13}
+                    className="opacity-0 group-hover:opacity-100 text-slate-500 transition-opacity"
+                  />
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Bottom: Account Row pinned to base (Ink initial avatar 'TL' + name + plan + gear) */}
-        <div
-          style={{
-            padding: '14px 16px',
-            borderTop: '1px solid #E7DCCC',
-            backgroundColor: '#ECE2D5',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* Ink initial avatar 'TL' */}
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                backgroundColor: '#1A1A1A',
-                color: '#FAF6F0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '12px',
-                fontWeight: 600,
-                letterSpacing: '0.5px',
-              }}
-            >
-              TL
-            </div>
-
-            <div>
-              <div style={{ fontSize: '13px', fontWeight: 600, color: '#1A1A1A' }}>
-                Terra Lead
-              </div>
-              <div style={{ fontSize: '11px', color: '#736B5E' }}>
-                Crime Intel Pro
-              </div>
-            </div>
-          </div>
-
+        {/* Bottom Emergency SOS & Stats Banner */}
+        <div className="p-3 border-t border-white/10 space-y-2 bg-slate-950/80">
+          {/* Quick SOS Bar */}
           <button
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#736B5E',
-              cursor: 'pointer',
-              padding: '6px',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            title="Account Settings"
+            onClick={onOpenSos}
+            className="w-full p-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 text-xs font-semibold flex items-center justify-between transition-all"
           >
-            <Settings size={16} />
+            <div className="flex items-center gap-2">
+              <PhoneCall size={14} className="text-rose-400 animate-pulse" />
+              <span>National Helpline (112 / 1930)</span>
+            </div>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">
+              SOS
+            </span>
           </button>
+
+          {/* Database Live Telemetry */}
+          <div className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="radar-blip"></span>
+              <span>pgvector Embeddings</span>
+            </div>
+            <span className="text-cyan-400 font-bold">
+              {stats?.totalRecords || 105} Records
+            </span>
+          </div>
         </div>
       </aside>
     </>

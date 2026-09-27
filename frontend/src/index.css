@@ -1,19 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  --canvas-cream: #FAF6F0;
-  --text-ink: #1A1A1A;
-  --text-muted: #736B5E;
-  --text-subtle: #9E9484;
-  --accent-terracotta: #C4552F;
-  --accent-terracotta-hover: #A8421F;
-  --paper-surface: #F4ECE1;
-  --paper-hover: #ECE2D5;
-  --soft-terracotta: #F0E3D5;
-  --soft-terracotta-border: #EAD6C4;
-  --divider-hairline: #E7DCCC;
-  --code-charcoal: #262019;
-  --code-header: #1F1A15;
+  --bg-cosmic: #07090e;
+  --bg-subtle: #0d121d;
+  --bg-surface: #111827;
+  --bg-surface-elevated: #162032;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(59, 130, 246, 0.3);
+  --accent-cyan: #06b6d4;
+  --accent-blue: #3b82f6;
+  --accent-indigo: #6366f1;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --code-bg: #090d16;
 }
 
 * {
@@ -23,18 +26,21 @@
 }
 
 body {
-  background-color: var(--canvas-cream);
-  color: var(--text-ink);
+  background-color: var(--bg-cosmic);
+  color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.68;
+  line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.07) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.05) 0%, transparent 40%);
+  background-attachment: fixed;
 }
 
-/* Typography Classes */
-.font-serif {
-  font-family: 'Fraunces', Georgia, serif;
-  font-optical-sizing: auto;
+/* Typography */
+.font-display {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .font-sans {
@@ -45,59 +51,146 @@ body {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Custom Editorial Scrollbar */
+/* Custom Cyber Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(13, 18, 29, 0.6);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D9CDBC;
+  background: rgba(100, 116, 139, 0.4);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C4552F;
+  background: var(--accent-cyan);
 }
 
-/* Three-dot terracotta typing indicator */
-@keyframes terracotta-bounce {
+/* Glassmorphism & High-tech Panels */
+.cyber-panel {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.cyber-panel-glow {
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.12), inset 0 0 15px rgba(59, 130, 246, 0.04);
+}
+
+.glass-header {
+  background: rgba(7, 9, 14, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-footer {
+  background: rgba(7, 9, 14, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Pulse & Radar Animations */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(6, 182, 212, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+  }
+}
+
+.radar-blip {
+  width: 8px;
+  height: 8px;
+  background-color: #06b6d4;
+  border-radius: 50%;
+  animation: radar-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes cyber-bounce {
   0%, 80%, 100% {
     transform: translateY(0);
-    opacity: 0.4;
+    opacity: 0.3;
   }
   40% {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
     opacity: 1;
   }
 }
 
 .dot-bounce-1 {
-  animation: terracotta-bounce 1.4s infinite ease-in-out both;
+  animation: cyber-bounce 1.4s infinite ease-in-out both;
   animation-delay: -0.32s;
 }
 
 .dot-bounce-2 {
-  animation: terracotta-bounce 1.4s infinite ease-in-out both;
+  animation: cyber-bounce 1.4s infinite ease-in-out both;
   animation-delay: -0.16s;
 }
 
 .dot-bounce-3 {
-  animation: terracotta-bounce 1.4s infinite ease-in-out both;
+  animation: cyber-bounce 1.4s infinite ease-in-out both;
 }
 
-/* Glassmorphism background for sticky top bar and bottom composer */
-.glass-panel {
-  background-color: rgba(250, 246, 240, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* Subtle Grid Background Overlay */
+.grid-mesh {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 }
 
-/* Hover transitions */
-.transition-smooth {
-  transition: all 220ms ease-in-out;
+/* Button & Interactive Glows */
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.btn-primary:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.45);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+/* Transition utility */
+.transition-all-fast {
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }

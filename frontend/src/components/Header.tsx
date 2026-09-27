@@ -1,156 +1,103 @@
 import React from 'react';
-import { Menu, History, Share2, MoreHorizontal, RotateCcw } from 'lucide-react';
+import { Menu, RotateCcw, Activity, ShieldAlert, Cpu, Settings } from 'lucide-react';
 
 interface HeaderProps {
   title: string;
+  activeMode: string;
   onOpenMobileMenu: () => void;
   onClearChat: () => void;
   onOpenSettings: () => void;
+  onOpenSos: () => void;
+  totalRecords?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   title,
+  activeMode,
   onOpenMobileMenu,
   onClearChat,
   onOpenSettings,
+  onOpenSos,
+  totalRecords = 105,
 }) => {
+  const getModeTitle = () => {
+    switch (activeMode) {
+      case 'complaint':
+        return 'Citizen Intake // e-FIR Filing Hub';
+      case 'tracker':
+        return 'Investigation Timeline // Case Status Tracker';
+      case 'analytics':
+        return 'Threat Radar // Live Crime Intelligence';
+      case 'ledger':
+        return 'PostgreSQL Ledger // Case Database Explorer';
+      default:
+        return title || 'AI Crime Database Analyst';
+    }
+  };
+
   return (
-    <header
-      className="glass-panel"
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 30,
-        borderBottom: '1px solid #E7DCCC',
-        height: '60px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 24px',
-      }}
-    >
-      {/* Left: Mobile hamburger toggle & Editorial conversation title */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
+    <header className="glass-header sticky top-0 z-30 h-16 px-4 md:px-6 flex items-center justify-between">
+      {/* Left: Mobile Menu & Breadcrumbs / Title */}
+      <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onOpenMobileMenu}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#736B5E',
-            cursor: 'pointer',
-            padding: '6px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          className="md:hidden"
+          className="md:hidden p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
           id="btn-mobile-menu"
         >
-          <Menu size={20} />
+          <Menu size={18} />
         </button>
 
-        {/* Current conversation title in Fraunces serif (~18px) */}
-        <h1
-          className="font-serif"
-          style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1A1A1A',
-            letterSpacing: '-0.2px',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            margin: 0,
-          }}
-        >
-          {title || 'New conversation'}
-        </h1>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-semibold hidden sm:inline">
+              CRIME WATCH AI // AEGIS SENTINEL
+            </span>
+          </div>
+          <h1 className="text-sm md:text-base font-bold font-display text-white truncate">
+            {getModeTitle()}
+          </h1>
+        </div>
       </div>
 
-      {/* Right: History / Share / More icon buttons */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      {/* Right Action Icons & Live Badges */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Live Vector Engine Pill */}
+        <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-white/10 text-[11px] font-mono text-slate-300">
+          <Cpu size={12} className="text-cyan-400" />
+          <span>PGVECTOR: CONNECTED</span>
+          <span className="text-slate-500">|</span>
+          <span className="text-cyan-400">{totalRecords} RECORDS</span>
+        </div>
+
+        {/* Emergency SOS Button */}
         <button
-          onClick={onClearChat}
-          title="Reset conversation"
-          style={{
-            background: 'transparent',
-            border: '1px solid #E7DCCC',
-            color: '#736B5E',
-            cursor: 'pointer',
-            padding: '6px 10px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            fontSize: '12px',
-            fontFamily: 'Inter, sans-serif',
-            transition: 'all 200ms ease',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F4ECE1')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-          id="btn-clear-chat"
+          onClick={onOpenSos}
+          className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 hover:text-rose-200 border border-rose-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(244,63,94,0.15)]"
         >
-          <RotateCcw size={14} />
-          <span className="hidden sm:inline">Reset</span>
+          <ShieldAlert size={14} className="text-rose-400" />
+          <span>Emergency SOS</span>
         </button>
+
+        {activeMode === 'chat' && (
+          <button
+            onClick={onClearChat}
+            title="Reset active chat session"
+            className="px-3 py-1.5 rounded-xl btn-secondary text-xs font-medium flex items-center gap-1.5"
+            id="btn-clear-chat"
+          >
+            <RotateCcw size={13} />
+            <span className="hidden sm:inline">Reset</span>
+          </button>
+        )}
 
         <button
           onClick={onOpenSettings}
-          title="View Database Intel & Stats"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#736B5E',
-            cursor: 'pointer',
-            padding: '8px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F4ECE1')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-          id="btn-history-stats"
+          title="Telemetry & Config"
+          className="p-2 rounded-xl btn-secondary text-slate-400 hover:text-white"
+          id="btn-settings"
         >
-          <History size={17} />
-        </button>
-
-        <button
-          title="Share conversation"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#736B5E',
-            cursor: 'pointer',
-            padding: '8px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F4ECE1')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-          id="btn-share-chat"
-        >
-          <Share2 size={17} />
-        </button>
-
-        <button
-          onClick={onOpenSettings}
-          title="More options"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#736B5E',
-            cursor: 'pointer',
-            padding: '8px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F4ECE1')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-          id="btn-more-options"
-        >
-          <MoreHorizontal size={17} />
+          <Settings size={16} />
         </button>
       </div>
     </header>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Paperclip, ArrowUp, ChevronDown, Loader2 } from 'lucide-react';
+import { ArrowUp, Sparkles, Loader2, Cpu, Mic, Paperclip } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -8,7 +8,6 @@ interface ChatInputProps {
 
 export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
   const [input, setInput] = useState('');
-  const [showModelPicker, setShowModelPicker] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -36,188 +35,61 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }
   };
 
   return (
-    <div
-      className="glass-panel"
-      style={{
-        position: 'sticky',
-        bottom: 0,
-        padding: '12px 20px 18px 20px',
-        borderTop: '1px solid #E7DCCC',
-        zIndex: 20,
-      }}
-    >
-      <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-        {/* Rounded-2xl bordered card on cream (#FAF6F0) with a soft shadow */}
+    <div className="glass-footer sticky bottom-0 p-3 md:p-4 z-20">
+      <div className="max-w-4xl mx-auto">
         <form
           onSubmit={handleSubmit}
-          style={{
-            backgroundColor: '#FAF6F0',
-            borderRadius: '18px',
-            border: '1px solid #EAD6C4',
-            padding: '12px 16px 10px 16px',
-            boxShadow: '0 4px 16px rgba(168, 66, 31, 0.05)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-            transition: 'border-color 200ms ease',
-          }}
-          onFocus={() => {
-            const el = document.getElementById('composer-card');
-            if (el) el.style.borderColor = '#C4552F';
-          }}
-          id="composer-card"
+          className="cyber-panel p-3 bg-slate-900/90 border-white/15 focus-within:border-cyan-500/60 focus-within:shadow-[0_0_25px_rgba(6,182,212,0.2)] transition-all flex flex-col gap-2 rounded-2xl"
         >
-          {/* Auto-grow 'Reply to Terra…' textarea */}
+          {/* Textarea */}
           <textarea
             ref={textareaRef}
             rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Reply to Terra…"
-            style={{
-              width: '100%',
-              backgroundColor: 'transparent',
-              border: 'none',
-              outline: 'none',
-              color: '#1A1A1A',
-              fontSize: '15px',
-              fontFamily: 'Inter, sans-serif',
-              resize: 'none',
-              lineHeight: '1.6',
-              maxHeight: '160px',
-            }}
+            placeholder="Ask about crime cases, specific cities, stolen items, or suspect profiles..."
             disabled={isLoading}
+            className="w-full bg-transparent border-none outline-none text-white placeholder:text-slate-500 text-sm font-sans resize-none max-h-40 leading-relaxed px-2"
             id="chat-input-textarea"
           />
 
-          {/* Bottom Row */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingTop: '4px',
-            }}
-          >
-            {/* Left: Attach button + Model Chip Pill */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <button
-                type="button"
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#736B5E',
-                  cursor: 'pointer',
-                  padding: '6px',
-                  borderRadius: '6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#C4552F')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#736B5E')}
-                title="Attach file"
-              >
-                <Paperclip size={16} />
-              </button>
-
-              {/* Model Chip Pill: terracotta dot · 'Terra 1.5 · Editorial' · caret */}
-              <button
-                type="button"
-                onClick={() => setShowModelPicker(!showModelPicker)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  backgroundColor: '#F4ECE1',
-                  border: '1px solid #E7DCCC',
-                  borderRadius: '9999px',
-                  padding: '4px 10px',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  color: '#1A1A1A',
-                  cursor: 'pointer',
-                  transition: 'background-color 150ms ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#ECE2D5')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#F4ECE1')}
-              >
-                <span
-                  style={{
-                    width: '6px',
-                    height: '6px',
-                    borderRadius: '50%',
-                    backgroundColor: '#C4552F',
-                    display: 'inline-block',
-                  }}
-                />
-                <span>Terra 1.5 · Editorial</span>
-                <ChevronDown size={13} color="#736B5E" />
-              </button>
+          {/* Bottom Bar */}
+          <div className="flex items-center justify-between pt-1 border-t border-white/5 text-xs text-slate-400">
+            {/* Model Pill */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950 border border-white/10 text-[11px] font-mono text-cyan-300">
+                <Cpu size={12} className="text-cyan-400" />
+                <span>LangChain4j + pgvector</span>
+              </div>
             </div>
 
-            {/* Right: '⏎ to send' hint + Round terracotta send button */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span
-                style={{
-                  fontSize: '11.5px',
-                  color: '#9E9484',
-                  fontFamily: 'Inter, sans-serif',
-                }}
-                className="hidden sm:inline"
-              >
-                ⏎ to send
+            {/* Right: Hint + Submit Button */}
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-mono text-slate-500 hidden sm:inline">
+                ⏎ to execute query
               </span>
 
-              {/* Round terracotta send button (#C4552F) */}
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  backgroundColor: input.trim() && !isLoading ? '#C4552F' : '#E7DCCC',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: input.trim() && !isLoading ? 'pointer' : 'not-allowed',
-                  transition: 'all 200ms ease',
-                  boxShadow: input.trim() && !isLoading ? '0 2px 6px rgba(196, 85, 47, 0.3)' : 'none',
-                }}
-                onMouseEnter={(e) => {
-                  if (input.trim() && !isLoading) e.currentTarget.style.backgroundColor = '#A8421F';
-                }}
-                onMouseLeave={(e) => {
-                  if (input.trim() && !isLoading) e.currentTarget.style.backgroundColor = '#C4552F';
-                }}
+                className="w-8 h-8 rounded-xl btn-primary flex items-center justify-center disabled:opacity-40 transition-all shadow-md shadow-cyan-500/20"
                 id="btn-send-message"
                 title="Send query"
               >
                 {isLoading ? (
-                  <Loader2 size={16} className="animate-spin text-white" />
+                  <Loader2 size={15} className="animate-spin text-white" />
                 ) : (
-                  <ArrowUp size={16} strokeWidth={2.5} color="#FFFFFF" />
+                  <ArrowUp size={16} strokeWidth={2.5} className="text-white" />
                 )}
               </button>
             </div>
           </div>
         </form>
 
-        {/* Centered 'Terra can make mistakes. Double-check important info.' disclaimer */}
-        <div
-          style={{
-            fontSize: '11.5px',
-            color: '#9E9484',
-            textAlign: 'center',
-            marginTop: '8px',
-            letterSpacing: '0.1px',
-          }}
-        >
-          Terra can make mistakes. Double-check important crime record info. (Synthetic Demo Data)
-        </div>
+        <p className="text-[11px] text-slate-500 text-center mt-2 font-mono">
+          Aegis Crime AI retrieves grounded evidence from PostgreSQL. All data is for law enforcement demonstration.
+        </p>
       </div>
     </div>
   );

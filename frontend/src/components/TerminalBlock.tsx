@@ -11,51 +11,22 @@ export const TerminalBlock: React.FC<TerminalBlockProps> = ({ log }) => {
   const lines = log.split('\n');
 
   return (
-    <div
-      style={{
-        backgroundColor: '#0d0f12',
-        border: '1px solid #1f2937',
-        borderRadius: '8px',
-        margin: '12px 0',
-        overflow: 'hidden',
-        fontFamily: 'JetBrains Mono, monospace',
-        fontSize: '12px',
-      }}
-    >
+    <div className="my-3 rounded-xl border border-white/10 bg-[#070a10] overflow-hidden font-mono text-xs">
       {/* Terminal Top Bar */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '6px 12px',
-          backgroundColor: '#15181e',
-          borderBottom: '1px solid #1f2937',
-          color: '#64748b',
-          fontSize: '11px',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <TerminalIcon size={12} color="#3b82f6" />
-          <span>pgvector & postgres telemetry</span>
+      <div className="flex items-center justify-between px-3.5 py-2 bg-slate-900/80 border-b border-white/10 text-slate-400 text-[11px]">
+        <div className="flex items-center gap-2">
+          <TerminalIcon size={13} className="text-cyan-400" />
+          <span className="text-slate-300 font-semibold">PostgreSQL & pgvector Execution Telemetry</span>
         </div>
-        <div style={{ display: 'flex', gap: '4px' }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#374151' }} />
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#374151' }} />
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
         </div>
       </div>
 
       {/* Terminal Output */}
-      <div
-        style={{
-          padding: '12px 14px',
-          overflowX: 'auto',
-          whiteSpace: 'pre-wrap',
-          lineHeight: '1.6',
-          color: '#cbd5e1',
-        }}
-      >
+      <div className="p-3.5 overflow-x-auto whitespace-pre-wrap leading-relaxed text-slate-300 space-y-1">
         {lines.map((line, idx) => {
           if (!line.trim()) return null;
 
@@ -63,14 +34,21 @@ export const TerminalBlock: React.FC<TerminalBlockProps> = ({ log }) => {
             const rest = line.substring(1).trim();
             const isSuccess = rest.includes('SUCCESS') || rest.includes('RESULT');
             const isWarn = rest.includes('WARN') || rest.includes('ERR');
+            const isSql = rest.includes('SELECT') || rest.includes('FROM');
 
             return (
-              <div key={idx} style={{ display: 'flex', gap: '8px' }}>
-                <span style={{ color: '#10b981', fontWeight: 600, userSelect: 'none' }}>$</span>
+              <div key={idx} className="flex gap-2 items-start">
+                <span className="text-cyan-400 font-bold select-none">$</span>
                 <span
-                  style={{
-                    color: isSuccess ? '#3b82f6' : isWarn ? '#f59e0b' : '#e2e8f0',
-                  }}
+                  className={
+                    isSuccess
+                      ? 'text-emerald-400 font-semibold'
+                      : isWarn
+                      ? 'text-amber-400'
+                      : isSql
+                      ? 'text-cyan-300'
+                      : 'text-slate-200'
+                  }
                 >
                   {rest}
                 </span>
@@ -79,7 +57,7 @@ export const TerminalBlock: React.FC<TerminalBlockProps> = ({ log }) => {
           }
 
           return (
-            <div key={idx} style={{ color: '#94a3b8', paddingLeft: '16px' }}>
+            <div key={idx} className="text-slate-400 pl-4">
               {line}
             </div>
           );

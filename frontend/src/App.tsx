@@ -3,6 +3,11 @@ import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { ChatFeed } from './components/ChatFeed';
 import { ChatInput } from './components/ChatInput';
+import { ComplaintSection } from './components/ComplaintSection';
+import { ComplaintTracker } from './components/ComplaintTracker';
+import { AnalyticsDashboard } from './components/AnalyticsDashboard';
+import { CaseLedger } from './components/CaseLedger';
+import { SosModal } from './components/SosModal';
 import { SettingsModal } from './components/SettingsModal';
 import {
   ChatMessage,
@@ -17,10 +22,13 @@ import {
 } from './api/chatApi';
 
 export const App: React.FC = () => {
+  const [activeMode, setActiveMode] = useState<string>('chat');
+  const [trackerInitialNumber, setTrackerInitialNumber] = useState<string>('');
+
   const [sessions, setSessions] = useState<ConversationSession[]>(() => [
     {
       id: 'session-1',
-      title: 'Theft cases in Chennai',
+      title: 'Vehicle Theft Analysis',
       lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       messages: [],
     },
@@ -32,6 +40,7 @@ export const App: React.FC = () => {
   const [stats, setStats] = useState<DatabaseStats | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [isSosOpen, setIsSosOpen] = useState<boolean>(false);
 
   const activeSession = sessions.find((s) => s.id === activeSessionId) || sessions[0];
 
@@ -81,6 +90,9 @@ export const App: React.FC = () => {
       setSessions((prev) =>
         prev.map((s) => (s.id === activeSessionId ? { ...s, messages: [...s.messages, agentMsg] } : s))
       );
+
+      // Refresh database stats count
+      fetchDatabaseStats().then(setStats);
     } catch (error: any) {
       const errorMsg: ChatMessage = {
         id: `msg-${Date.now()}-error`,
@@ -102,7 +114,7 @@ export const App: React.FC = () => {
     const newSessionId = `session-${Date.now()}`;
     const newSession: ConversationSession = {
       id: newSessionId,
-      title: 'New conversation',
+      title: 'New Investigation Query',
       lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       messages: [],
     };
@@ -117,61 +129,85 @@ export const App: React.FC = () => {
     );
   };
 
+  const handleInvestigateInChat = (caseId: string, promptText: string) => {
+    setActiveMode('chat');
+    handleSendMessage(promptText);
+  };
+
+  const handleViewTracker = (trackingNumber: string) => {
+    setTrackerInitialNumber(trackingNumber);
+    setActiveMode('tracker');
+  };
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100vh',
-        width: '100vw',
-        backgroundColor: '#FAF6F0', // Cream canvas
-        color: '#1A1A1A',
-        overflow: 'hidden',
-      }}
-    >
-      {/* 264px Left Sidebar on Paper #F4ECE1 */}
+    <div className="flex h-screen w-screen bg-[#07090e] text-slate-100 overflow-hidden font-sans">
+      {/* Cyber Sidebar */}
       <Sidebar
         sessions={sessions}
         activeSessionId={activeSessionId}
+        activeMode={activeMode}
         onSelectSession={setActiveSessionId}
+        onSelectMode={setActiveMode}
         onNewChat={handleNewChat}
         isOpenMobile={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
+        onOpenSos={() => setIsSosOpen(true)}
         stats={stats}
       />
 
-      {/* Main Single Scroll Container */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100vh',
-          minWidth: 0,
-          backgroundColor: '#FAF6F0',
-        }}
-        className="md:pl-[264px]"
-      >
-        {/* Sticky Top Bar (Glass) */}
+      {/* Main Command Center Canvas */}
+      <div className="flex-1 flex flex-col h-screen min-w-0 md:pl-72 bg-[#07090e] grid-mesh relative">
+        {/* Sticky Top Telemetry Bar */}
         <Header
           title={activeSession.title}
+          activeMode={activeMode}
           onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
           onClearChat={handleClearChat}
           onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenSos={() => setIsSosOpen(true)}
+          totalRecords={stats?.totalRecords || 105}
         />
 
-        {/* Centered Message Thread */}
-        <ChatFeed
-          messages={activeSession.messages}
-          isLoading={isLoading}
-          sampleQueries={sampleQueries}
-          onSelectSampleQuery={handleSendMessage}
-        />
+        {/* Dynamic Mode Switcher Views */}
+        {activeMode === 'chat' && (
+          <>
+            <ChatFeed
+              messages={activeSession.messages}
+              isLoading={isLoading}
+              sampleQueries={sampleQueries}
+              onSelectSampleQuery={handleSendMessage}
+            />
+            <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+          </>
+        )}
 
-        {/* Sticky Bottom Composer (Glass) */}
-        <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+        {activeMode === 'complaint' && (
+          <ComplaintSection
+            onInvestigateInChat={handleInvestigateInChat}
+            onViewTracker={handleViewTracker}
+          />
+        )}
+
+        {activeMode === 'tracker' && (
+          <ComplaintTracker
+            initialTrackingNumber={trackerInitialNumber}
+            onInvestigateInChat={handleInvestigateInChat}
+          />
+        )}
+
+        {activeMode === 'analytics' && (
+          <AnalyticsDashboard onInvestigateInChat={handleInvestigateInChat} />
+        )}
+
+        {activeMode === 'ledger' && (
+          <CaseLedger onInvestigateInChat={handleInvestigateInChat} />
+        )}
       </div>
 
-      {/* Telemetry & Info Modal */}
+      {/* Emergency SOS Modal */}
+      <SosModal isOpen={isSosOpen} onClose={() => setIsSosOpen(false)} />
+
+      {/* Telemetry & Architecture Settings Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}

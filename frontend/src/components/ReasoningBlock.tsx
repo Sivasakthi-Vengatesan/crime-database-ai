@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, ChevronDown } from 'lucide-react';
+import { Cpu, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { ReasoningStep } from '../types/chat';
 
 interface ReasoningBlockProps {
@@ -10,89 +10,38 @@ export const ReasoningBlock: React.FC<ReasoningBlockProps> = ({ steps }) => {
   if (!steps || steps.length === 0) return null;
 
   return (
-    <details
-      className="technical-block group"
-      style={{
-        backgroundColor: '#232730',
-        borderRadius: '8px',
-        border: '1px solid #1f2937',
-        margin: '12px 0',
-        overflow: 'hidden',
-      }}
-    >
-      <summary
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '10px 14px',
-          cursor: 'pointer',
-          fontSize: '14px', // 14px text
-          color: '#e2e8f0',
-          fontWeight: 500,
-          transition: 'background-color 300ms ease-in-out',
-        }}
-        className="glow-white"
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Cpu size={16} color="#f59e0b" style={{ flexShrink: 0 }} />
-          <span>Agent Reasoning ({steps.length} processing steps)</span>
+    <details className="technical-block group my-3 rounded-xl border border-white/10 bg-slate-900/60 overflow-hidden">
+      <summary className="flex items-center justify-between p-3.5 cursor-pointer text-xs font-semibold text-slate-200 hover:bg-white/5 transition-colors">
+        <div className="flex items-center gap-2">
+          <Cpu size={15} className="text-amber-400 shrink-0" />
+          <span>LangChain4j RAG Inference ({steps.length} steps executed)</span>
         </div>
         <ChevronDown
-          size={16}
-          color="#94a3b8"
-          className="chevron-icon"
-          style={{ transition: 'transform 300ms ease-in-out' }}
+          size={15}
+          className="text-slate-400 group-open:rotate-180 transition-transform duration-200"
         />
       </summary>
 
-      <div
-        style={{
-          borderTop: '1px solid rgba(31, 41, 55, 0.2)', // #1f293720
-          backgroundColor: 'rgba(0, 0, 0, 0.2)', // #00000033
-          padding: '12px 14px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-        }}
-      >
+      <div className="border-t border-white/5 bg-slate-950/60 p-3.5 space-y-2.5">
         {steps.map((step, idx) => (
           <div
             key={idx}
-            style={{
-              padding: '8px 10px',
-              backgroundColor: 'rgba(24, 27, 33, 0.6)',
-              borderRadius: '6px',
-              border: '1px solid rgba(55, 65, 81, 0.3)',
-              fontSize: '12px',
-            }}
+            className="p-2.5 rounded-lg bg-slate-900/80 border border-white/5 space-y-1 text-xs"
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-              <span style={{ fontWeight: 600, color: '#f59e0b' }}>
+            <div className="flex items-center justify-between font-mono">
+              <span className="font-bold text-amber-400 flex items-center gap-1.5">
+                <CheckCircle2 size={12} className="text-emerald-400" />
                 {idx + 1}. {step.stepName}
               </span>
               {step.durationMs !== undefined && (
-                <span style={{ color: '#64748b', fontSize: '11px', fontFamily: 'JetBrains Mono, monospace' }}>
+                <span className="text-[10px] text-slate-500">
                   {step.durationMs}ms
                 </span>
               )}
             </div>
-            <div style={{ color: '#cbd5e1', marginBottom: '3px' }}>
-              {step.description}
-            </div>
+            <p className="text-slate-300 text-xs">{step.description}</p>
             {step.details && (
-              <div
-                style={{
-                  color: '#94a3b8',
-                  fontSize: '11px',
-                  fontFamily: 'JetBrains Mono, monospace',
-                  backgroundColor: 'rgba(13, 15, 18, 0.5)',
-                  padding: '4px 6px',
-                  borderRadius: '4px',
-                  marginTop: '4px',
-                  overflowX: 'auto',
-                }}
-              >
+              <div className="text-[11px] font-mono text-cyan-300 bg-slate-950 px-2 py-1 rounded border border-white/5 overflow-x-auto">
                 {step.details}
               </div>
             )}

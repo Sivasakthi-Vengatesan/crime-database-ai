@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Terminal } from 'lucide-react';
 
 interface CodeBlockProps {
   filename?: string;
@@ -19,114 +19,69 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   };
 
   const formatSyntaxLine = (line: string, idx: number) => {
-    // Syntax highlight keywords in #E39B6E, strings in #C9B78E, comments in #8A7E6C, functions in #EAD9BE
     if (line.startsWith('--') || line.startsWith('//') || line.startsWith('#')) {
-      return <span key={idx} style={{ color: '#8A7E6C', fontStyle: 'italic' }}>{line}</span>;
+      return <span key={idx} className="text-slate-500 italic">{line}</span>;
     }
 
     if (line.startsWith('$')) {
       const rest = line.substring(1);
       return (
         <span key={idx}>
-          <span style={{ color: '#C4552F', fontWeight: 600 }}>$</span>
-          <span style={{ color: '#EAD9BE' }}>{rest}</span>
+          <span className="text-cyan-400 font-bold">$</span>
+          <span className="text-slate-300">{rest}</span>
         </span>
       );
     }
 
-    // Replace basic SQL / code tokens with warm palette colors
-    const parts = line.split(/(\b(?:SELECT|FROM|WHERE|AND|ILIKE|BETWEEN|ORDER BY|LIMIT|pgvector|cosine_ops|Open|Closed|High|Medium|Low)\b|'[^']*'|"[^"]*")/g);
+    const parts = line.split(/(\b(?:SELECT|FROM|WHERE|AND|OR|ILIKE|BETWEEN|ORDER BY|LIMIT|pgvector|cosine_ops|Open|Closed|High|Medium|Low)\b|'[^']*'|"[^"]*")/g);
 
     return (
       <span key={idx}>
         {parts.map((part, pIdx) => {
-          if (/^(?:SELECT|FROM|WHERE|AND|ILIKE|BETWEEN|ORDER BY|LIMIT|pgvector|cosine_ops)$/i.test(part)) {
-            return <span key={pIdx} style={{ color: '#E39B6E', fontWeight: 600 }}>{part}</span>;
+          if (/^(?:SELECT|FROM|WHERE|AND|OR|ILIKE|BETWEEN|ORDER BY|LIMIT|pgvector|cosine_ops)$/i.test(part)) {
+            return <span key={pIdx} className="text-cyan-400 font-bold">{part}</span>;
           }
           if (/^'[^']*'|"[^"]*"$/.test(part)) {
-            return <span key={pIdx} style={{ color: '#C9B78E' }}>{part}</span>;
+            return <span key={pIdx} className="text-amber-300">{part}</span>;
           }
           if (/^(?:Open|Closed|High|Medium|Low)$/i.test(part)) {
-            return <span key={pIdx} style={{ color: '#EAD9BE' }}>{part}</span>;
+            return <span key={pIdx} className="text-emerald-400 font-semibold">{part}</span>;
           }
-          return <span key={pIdx} style={{ color: '#D4C5B3' }}>{part}</span>;
+          return <span key={pIdx} className="text-slate-300">{part}</span>;
         })}
       </span>
     );
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: '#262019',
-        borderRadius: '10px',
-        border: '1px solid #383027',
-        margin: '14px 0',
-        overflow: 'hidden',
-        fontFamily: 'JetBrains Mono, monospace',
-        fontSize: '12.5px',
-        boxShadow: '0 2px 8px rgba(38, 32, 25, 0.15)',
-      }}
-    >
-      {/* Header Strip (#1F1A15) */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '8px 14px',
-          backgroundColor: '#1F1A15',
-          borderBottom: '1px solid #332B22',
-        }}
-      >
-        <span style={{ color: '#A89B88', fontSize: '12px', fontWeight: 500 }}>
-          {filename}
-        </span>
+    <div className="my-3 rounded-xl border border-white/10 bg-[#070a10] overflow-hidden font-mono text-xs">
+      {/* Header Strip */}
+      <div className="flex items-center justify-between px-3.5 py-2 bg-slate-900/80 border-b border-white/10 text-slate-400 text-[11px]">
+        <div className="flex items-center gap-1.5">
+          <Terminal size={12} className="text-cyan-400" />
+          <span>{filename}</span>
+        </div>
 
         <button
           onClick={handleCopy}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#A89B88',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            fontSize: '11.5px',
-            fontFamily: 'Inter, sans-serif',
-            padding: '2px 6px',
-            borderRadius: '4px',
-            transition: 'color 150ms ease',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = '#FAF6F0')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = '#A89B88')}
+          className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-white transition-colors"
         >
           {copied ? (
             <>
-              <Check size={13} color="#C9B78E" />
-              <span style={{ color: '#C9B78E' }}>Copied</span>
+              <Check size={12} className="text-emerald-400" />
+              <span className="text-emerald-400">Copied</span>
             </>
           ) : (
             <>
-              <Copy size={13} />
+              <Copy size={12} />
               <span>Copy</span>
             </>
           )}
         </button>
       </div>
 
-      {/* Code Area with Muted Syntax Colors */}
-      <pre
-        style={{
-          padding: '12px 16px',
-          margin: 0,
-          overflowX: 'auto',
-          lineHeight: '1.65',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-        }}
-      >
+      {/* Code Area */}
+      <pre className="p-3.5 m-0 overflow-x-auto leading-relaxed whitespace-pre-wrap break-words">
         <code>
           {code.split('\n').map((line, idx) => (
             <div key={idx}>{formatSyntaxLine(line, idx)}</div>
