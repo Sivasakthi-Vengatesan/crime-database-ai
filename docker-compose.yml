@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with pgvector extension enabled
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: crime_ai_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: crimedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d crimedb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - crime_ai_network
+
+  # Java 17 Spring Boot Backend with LangChain4j & pgvector integration
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crime_ai_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/crimedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres_secure_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SERVER_PORT: 8080
+      JAVA_OPTS: "-Xms256m -Xmx512m -XX:+UseG1GC"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+    networks:
+      - crime_ai_network
+
+  # React TypeScript Frontend served via optimized Nginx
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: crime_ai_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "3000:80"
+    networks:
+      - crime_ai_network
+
+networks:
+  crime_ai_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
