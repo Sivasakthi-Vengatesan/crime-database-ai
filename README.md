@@ -1,6 +1,11 @@
 # CrimsonLogic — Intelligent Conversational AI for Crime Database
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-ef4444?style=for-the-badge&logo=github)](https://sivasakthi-vengatesan.github.io/crime-database-ai/)
+[![CI/CD Pipeline](https://img.shields.io/github/actions/workflow/status/Sivasakthi-Vengatesan/crime-database-ai/deploy-pages.yml?branch=master&style=for-the-badge&logo=githubactions&logoColor=white&label=GitHub%20Pages)](https://github.com/Sivasakthi-Vengatesan/crime-database-ai/actions)
+
 An evidence-grounded conversational AI intelligence assistant for querying synthetic crime database records using natural language. Built with a robust **Java 17 Spring Boot** backend leveraging **LangChain4j**, **Spring Data JPA**, and **PostgreSQL with pgvector**, paired with a **React + TypeScript + Vite** CrimsonLogic intelligence interface.
+
+🌐 **Live Web Application**: [https://sivasakthi-vengatesan.github.io/crime-database-ai/](https://sivasakthi-vengatesan.github.io/crime-database-ai/)
 
 > [!NOTE]
 > **Academic & Synthetic Demo Notice**: The crime records used by this prototype are synthetic data generated solely for demonstration and academic purposes. All cases, descriptions, IDs, dates, and locations are fictional.
